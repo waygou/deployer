@@ -1,0 +1,20 @@
+<?php
+
+namespace Waygou\Deployer\Middleware;
+
+use Closure;
+
+class IsJson
+{
+    public function handle($request, Closure $next)
+    {
+        if (! $request->isJson()) {
+            return response()->json(
+                ['error' => 'Request Header Type not accepted. Expecting JSON.'],
+                406
+            );
+        }
+
+        return $next($request);
+    }
+}
