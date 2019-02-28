@@ -8,6 +8,6 @@ class BackupDirectoryNotWriteableException extends Exception
 {
     public function errorMessage()
     {
-        return $this->getMessage();
+        return __('deployer::exceptions.backup_directory_not_writeable');
     }
 }

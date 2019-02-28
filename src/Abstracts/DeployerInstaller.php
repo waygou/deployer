@@ -41,8 +41,10 @@ abstract class DeployerInstaller extends Command
     protected function installLaravelPassport()
     {
         $this->bulkInfo(2, 'Installing Laravel Passport...', 1);
+        $this->runProcess('composer require laravel/passport');
         $this->runProcess('php artisan vendor:publish --provider="Laravel\Passport\PassportServiceProvider" --quiet');
         $this->runProcess('php artisan migrate --quiet');
         $this->runProcess('php artisan passport:install --quiet');
+        $this->runProcess('composer dumpautoload');
     }
 }

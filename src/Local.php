@@ -30,7 +30,9 @@ class LocalOperation
         if ($backupPath) {
             @mkdir($backupPath, 0755, true);
 
-            return is_writable($backupPath);
+            if (is_writable($backupPath)) {
+                return capsule(true);
+            }
 
             throw new BackupDirectoryNotWriteableException(__('deployer::exceptions.backup_directory_not_writeable'));
         }

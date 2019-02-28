@@ -17,10 +17,11 @@ function ascii_title()
         ";
 }
 
-function capsule(bool $result, $message = null)
+function capsule(bool $result, $message = null, $payload = null)
 {
     $capsule = new stdClass();
     $capsule->ok = $result;
+    $capsule->payload = $payload;
     $capsule->message = $message;
 
     return $capsule;

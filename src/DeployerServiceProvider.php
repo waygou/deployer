@@ -6,7 +6,6 @@ use Laravel\Passport\Passport;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
-use Waygou\Deployer\Commands\PingCommand;
 use Waygou\Deployer\Commands\DeployCommand;
 use Waygou\Deployer\Commands\InstallLocalCommand;
 use Waygou\Deployer\Commands\InstallRemoteCommand;
@@ -82,7 +81,6 @@ class DeployerServiceProvider extends ServiceProvider
         );
 
         $this->commands([
-            PingCommand::class,
             InstallRemoteCommand::class,
             InstallLocalCommand::class,
             LocalInstallConfigCommand::class,

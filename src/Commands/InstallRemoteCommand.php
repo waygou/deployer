@@ -3,6 +3,7 @@
 namespace Waygou\Deployer\Commands;
 
 use Laravel\Passport\Client;
+use Illuminate\Support\Facades\DB;
 use Waygou\Deployer\Abstracts\DeployerInstaller;
 
 class InstallRemoteCommand extends DeployerInstaller
@@ -57,7 +58,7 @@ class InstallRemoteCommand extends DeployerInstaller
 
     protected function getClientCredentialsGrant()
     {
-        $client = Client::latest()->first();
+        $client = DB::table('oauth_clients')->latest()->first();
         $this->client = $client->id;
         $this->secret = $client->secret;
     }
