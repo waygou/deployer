@@ -21,11 +21,6 @@ abstract class DeployerInstaller extends Command
         parent::__construct();
     }
 
-    public function handle()
-    {
-        $this->showHero();
-    }
-
     protected function artisanMigrate()
     {
         $this->bulkInfo(2, 'Running Artisan migrate...', 1);
