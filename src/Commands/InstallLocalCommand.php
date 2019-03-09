@@ -30,7 +30,7 @@ class InstallLocalCommand extends DeployerInstaller
     public function handle()
     {
         $this->showHero();
-        $this->steps = 5;
+        $this->steps = 6;
 
         $fields = $this->validateOptions();
         if (! $fields->ok) {
@@ -66,6 +66,9 @@ class InstallLocalCommand extends DeployerInstaller
         $bar->advance();
 
         $this->registerLocalType();
+        $bar->advance();
+
+        $this->clearConfigurationCache();
         $bar->finish();
 
         $this->showLastResumedInformation();
@@ -81,34 +84,34 @@ class InstallLocalCommand extends DeployerInstaller
     {
         $this->bulkInfo(1, 'Registering Remote URL in your .env file...', 1);
         append_line_to_env('DEPLOYER_REMOTE_URL', $this->url) ?:
-        $this->error(self::ERROR_WRITE_PERMISSION);
+            $this->error(self::ERROR_WRITE_PERMISSION);
     }
 
     protected function registerLocalType()
     {
         $this->bulkInfo(2, 'Registering Deployer Local Type in your .env file...', 1);
         append_line_to_env('DEPLOYER_TYPE', 'local') ?:
-        $this->error(self::ERROR_WRITE_PERMISSION);
+            $this->error(self::ERROR_WRITE_PERMISSION);
     }
 
     protected function registerToken()
     {
         $this->bulkInfo(2, 'Registering remote token to your .env file...', 1);
         append_line_to_env('DEPLOYER_TOKEN', $this->token) ?:
-        $this->error(self::ERROR_WRITE_PERMISSION);
+            $this->error(self::ERROR_WRITE_PERMISSION);
     }
 
     protected function registerSecret()
     {
         $this->bulkInfo(2, 'Registering OAuth secret to your .env file...', 1);
         append_line_to_env('DEPLOYER_OAUTH_SECRET', $this->secret) ?:
-        $this->error(self::ERROR_WRITE_PERMISSION);
+            $this->error(self::ERROR_WRITE_PERMISSION);
     }
 
     protected function registerClient()
     {
         $this->bulkInfo(2, 'Registering Client id to your .env file...', 1);
         append_line_to_env('DEPLOYER_OAUTH_CLIENT', $this->client) ?:
-        $this->error(self::ERROR_WRITE_PERMISSION);
+            $this->error(self::ERROR_WRITE_PERMISSION);
     }
 }

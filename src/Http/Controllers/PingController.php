@@ -8,10 +8,6 @@ class PingController extends Controller
 {
     public function __invoke()
     {
-        $result = Remote::pingCheck();
-
-        return response()->json([
-            'payload' => ['result'=> true],
-        ]);
+        return response_payload(true);
     }
 }

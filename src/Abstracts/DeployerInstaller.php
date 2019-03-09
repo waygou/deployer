@@ -21,6 +21,10 @@ abstract class DeployerInstaller extends Command
         parent::__construct();
     }
 
+    public function handle()
+    {
+    }
+
     protected function artisanMigrate()
     {
         $this->bulkInfo(2, 'Running Artisan migrate...', 1);
@@ -41,5 +45,11 @@ abstract class DeployerInstaller extends Command
         $this->runProcess('php artisan migrate --quiet');
         $this->runProcess('php artisan passport:install --quiet');
         $this->runProcess('composer dumpautoload');
+    }
+
+    protected function clearConfigurationCache()
+    {
+        $this->bulkInfo(2, 'Cleaning Configuration cache...', 1);
+        $this->runProcess("php artisan configuration:clear --quiet", getcwd());
     }
 }

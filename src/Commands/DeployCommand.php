@@ -6,7 +6,7 @@ use Waygou\Deployer\Local;
 use Illuminate\Console\Command;
 use Waygou\Deployer\Concerns\SimplifiesConsoleOutput;
 
-class DeployCommand extends Command
+final class DeployCommand extends Command
 {
     use SimplifiesConsoleOutput;
 
@@ -46,17 +46,16 @@ class DeployCommand extends Command
         $bar = $this->output->createProgressBar(11);
         $bar->start();
 
-        $this->bulkInfo(2, '*** Local environment pre-deployment checks ***', 1);
-        Local::preChecks();
+        $this->preChecks();
         $bar->advance();
 
-        $this->bulkInfo(2, '*** OAuth & Remote Server connectivity test ***', 1);
-
-        $this->executeOrFail(function () {
-            Local::getAccessToken()
-                 ->ping();
-        }, 'ping_error');
+        $this->pingRemote();
         $bar->advance();
+
+        $this->askRemoteForPreChecks();
+        $bar->advance();
+
+        dd('-- stop --');
 
         $this->bulkInfo(2, '*** Remote server pre-deployment checks ***', 1);
         $this->executeOrFail(function () {
@@ -64,8 +63,6 @@ class DeployCommand extends Command
                  ->askRemoteForPreChecks();
         }, 'remote_prechecks_failed');
         $bar->advance();
-
-        dd('--');
 
         $this->bulkInfo(2, '*** Local codebase package creation (Zip) ***', 1);
         Local::zipCodeBase();
@@ -104,11 +101,51 @@ class DeployCommand extends Command
         $this->bulkInfo(2, '*** All good! ***', 1);
     }
 
+    protected function askRemoteForPreChecks()
+    {
+        $this->bulkInfo(2, '*** Remote server pre-deployment checks ***', 1);
+
+        rescue(function () {
+            Local::getAccessToken()
+                 ->askRemoteForPreChecks();
+        }, function () {
+            $this->gracefullyExit();
+        });
+    }
+
+    protected function pingRemote()
+    {
+        $this->bulkInfo(2, '*** OAuth & Remote Server connectivity test ***', 1);
+
+        rescue(function () {
+            Local::getAccessToken()
+                 ->ping();
+        }, function () {
+            $this->gracefullyExit();
+        });
+    }
+
+    protected function preChecks()
+    {
+        $this->bulkInfo(2, '*** Local environment pre-deployment checks ***', 1);
+        rescue(function () {
+            Local::preChecks();
+        }, function () {
+            $this->gracefullyExit();
+        });
+    }
+
     protected function executeOrFail(callable $process, $errorKey)
     {
         rescue($process, function () use ($errorKey) {
             $this->error(__("deployer::exceptions.{$errorKey}"));
             exit();
         });
+    }
+
+    protected function gracefullyExit($message = null)
+    {
+        $this->error($message ?? 'Ups. Looks like this step failed. Please check your Laravel logs for more information');
+        exit();
     }
 }

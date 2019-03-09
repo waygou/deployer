@@ -2,10 +2,8 @@
 
 namespace Waygou\Deployer;
 
-use Waygou\Deployer\Exceptions\RemotePreChecksException;
-use Waygou\Deployer\Exceptions\InvalidAccessTokenException;
-use Waygou\Deployer\Exceptions\RemoteServerConnectivityException;
-use Waygou\Deployer\Exceptions\BackupDirectoryNotWriteableException;
+use Waygou\Deployer\Exceptions\ResponseException;
+use Waygou\Deployer\Exceptions\ExecutionException;
 
 class Local
 {
@@ -27,14 +25,13 @@ class LocalOperation
     public function preChecks()
     {
         $backupPath = app('config')->get('deployer.codebase.backup_path');
+
         if ($backupPath) {
             @mkdir($backupPath, 0755, true);
 
-            if (is_writable($backupPath)) {
-                return capsule(true);
+            if (!is_writable($backupPath)) {
+                throw new ExecutionException('Backup folder not writeable');
             }
-
-            throw new BackupDirectoryNotWriteableException(__('deployer::exceptions.backup_directory_not_writeable'));
         }
     }
 
@@ -49,9 +46,11 @@ class LocalOperation
                                ->withPayload(['grant_type'    => 'client_credentials',
                                               'client_id'     => app('config')->get('deployer.oauth.client'),
                                               'client_secret' => app('config')->get('deployer.oauth.secret'), ])
+                                ->withHeader('Accept', 'application/json')
                                ->call(app('config')->get('deployer.remote.url').'/oauth/token');
 
         $this->checkAccessToken($response);
+
         $this->accessToken = new AccessToken(
             $response->payload->json['expires_in'],
             $response->payload->json['access_token']
@@ -64,35 +63,44 @@ class LocalOperation
     {
         $response = RESTCaller::asPost()
                               ->withHeader('Authorization', 'Bearer '.$this->accessToken->token)
+                              ->withHeader('Accept', 'application/json')
                               ->withPayload(['deployer-token' => app('config')->get('deployer.token')])
                               ->call(deployer_remote_url('predeployment-check'));
 
         dd($response);
 
-        if (! $response->isOk) {
-            throw new RemotePreChecksException(__('deployer::exceptions.remote_prechecks_failed'));
-        }
-
-        return $response->isOk &&
-               data_get($response->payload->json, 'payload.result') == true;
+        $this->checkResponseAcknowledgement($response);
     }
 
     public function ping()
     {
         $response = RESTCaller::asPost()
                               ->withHeader('Authorization', 'Bearer '.$this->accessToken->token)
+                              ->withHeader('Accept', 'application/json')
                               ->withPayload(['deployer-token' => app('config')->get('deployer.token')])
                               ->call(deployer_remote_url('ping'));
 
-        if (! $response->isOk) {
-            throw new RemoteServerConnectivityException(__('deployer::exceptions.cannot_get_access_token'));
+        $this->checkResponseAcknowledgement($response);
+    }
+
+    /**
+     * A response acknowledgement will always bring:
+     * isOk = true
+     * payload.result = true
+     * @param  ResponsePayload $response The response payload.
+     * @return void
+     */
+    private function checkResponseAcknowledgement(ResponsePayload $response)
+    {
+        if (! $response->isOk || data_get($response->payload->json, 'payload.result') != true) {
+            throw new ResponseException($response);
         }
     }
 
     private function checkAccessToken(?ResponsePayload $response)
     {
-        if (! $response->isOk) {
-            throw new InvalidAccessTokenException(__('deployer::exceptions.cannot_get_access_token'));
+        if (! $response->isOk || data_get($response->payload->json, 'payload.access_token') != null) {
+            throw new ExecutionException('Error trying to obtain an access token');
         }
     }
 

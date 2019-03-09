@@ -43,3 +43,10 @@ function append_line_to_env(string $key, $value)
 {
     return file_put_contents(base_path('.env'), PHP_EOL."{$key}={$value}", FILE_APPEND);
 }
+
+function response_payload($result, $payload = [])
+{
+    return response()->json([
+        'payload' => array_merge(['result'=> $result], $payload)
+    ]);
+}

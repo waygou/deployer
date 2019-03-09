@@ -20,13 +20,7 @@ class DeployerServiceProvider extends ServiceProvider
         $this->publishConfiguration();
         $this->registerMigrations();
         $this->loadRemoteRoutes();
-        $this->loadTranslations();
         $this->registerAuthGuard();
-    }
-
-    protected function loadTranslations()
-    {
-        $this->loadTranslationsFrom(__DIR__.'/../resources/lang/', 'deployer');
     }
 
     private function registerAuthGuard()

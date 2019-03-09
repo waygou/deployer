@@ -19,7 +19,7 @@ class InstallRemoteCommand extends DeployerInstaller
     public function handle()
     {
         parent::handle();
-        $this->steps = 4;
+        $this->steps = 5;
 
         if (! $this->option('skippassport')) {
             $this->installLaravelPassport();
@@ -46,7 +46,9 @@ class InstallRemoteCommand extends DeployerInstaller
         $this->registerRemoteToken();
         $bar->advance();
 
+        $this->clearConfigurationCache();
         $bar->finish();
+
         $this->showLocalInstallInformation();
     }
 
