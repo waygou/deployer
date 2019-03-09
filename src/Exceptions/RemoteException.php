@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Log;
 
 class RemoteException extends Exception
 {
-    var $message;
+    public $message;
 
     public function __construct($message)
     {

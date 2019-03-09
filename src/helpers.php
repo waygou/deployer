@@ -47,6 +47,6 @@ function append_line_to_env(string $key, $value)
 function response_payload($result, $payload = [])
 {
     return response()->json([
-        'payload' => array_merge(['result'=> $result], $payload)
+        'payload' => array_merge(['result'=> $result], $payload),
     ]);
 }

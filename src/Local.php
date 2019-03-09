@@ -29,7 +29,7 @@ class LocalOperation
         if ($backupPath) {
             @mkdir($backupPath, 0755, true);
 
-            if (!is_writable($backupPath)) {
+            if (! is_writable($backupPath)) {
                 throw new ExecutionException('Backup folder not writeable');
             }
         }
@@ -86,7 +86,7 @@ class LocalOperation
     /**
      * A response acknowledgement will always bring:
      * isOk = true
-     * payload.result = true
+     * payload.result = true.
      * @param  ResponsePayload $response The response payload.
      * @return void
      */

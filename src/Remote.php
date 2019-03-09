@@ -17,7 +17,6 @@ class RemoteOperation
     public function preChecks()
     {
         throw new RemoteException('Backup directory not writeable');
-
         $backupPath = app('config')->get('deployer.codebase.backup_path');
         if (filled($backupPath)) {
             @mkdir($backupPath, 0755, true);
