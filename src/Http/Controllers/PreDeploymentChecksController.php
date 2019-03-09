@@ -10,6 +10,7 @@ class PreDeploymentChecksController extends Controller
     public function __invoke()
     {
         Remote::preChecks();
+
         return response_payload(true);
     }
 }

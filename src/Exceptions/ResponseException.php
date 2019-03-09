@@ -8,10 +8,10 @@ use Waygou\Deployer\ResponsePayload;
 
 class ResponseException extends Exception
 {
-    var $response;
-    var $reason;
-    var $status;
-    var $message;
+    public $response;
+    public $reason;
+    public $status;
+    public $message;
 
     public function __construct(ResponsePayload $response)
     {
@@ -32,7 +32,7 @@ class ResponseException extends Exception
     // Needs to compute the best readable message from the available error data.
     public function message()
     {
-        /**
+        /*
          * HTTP xxx
          * isOk = false
          * instance.status

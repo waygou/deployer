@@ -50,6 +50,6 @@ abstract class DeployerInstaller extends Command
     protected function clearConfigurationCache()
     {
         $this->bulkInfo(2, 'Cleaning Configuration cache...', 1);
-        $this->runProcess("php artisan configuration:clear --quiet", getcwd());
+        $this->runProcess('php artisan configuration:clear --quiet', getcwd());
     }
 }
