@@ -36,9 +36,9 @@ class RequestPayload
         return $this;
     }
 
-    public function withPayload(array $payload = [])
+    public function withPayload(array $payload)
     {
-        $this->payload = $payload;
+        $this->payload = array_merge($this->payload, $payload);
 
         return $this;
     }

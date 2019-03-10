@@ -2,8 +2,8 @@
 
 namespace Waygou\Deployer;
 
+use Waygou\Deployer\Exceptions\LocalException;
 use Waygou\Deployer\Exceptions\ResponseException;
-use Waygou\Deployer\Exceptions\ExecutionException;
 
 class Local
 {
@@ -30,7 +30,7 @@ class LocalOperation
             @mkdir($backupPath, 0755, true);
 
             if (! is_writable($backupPath)) {
-                throw new ExecutionException('Backup folder not writeable');
+                throw new LocalException('Backup folder not writeable');
             }
         }
     }
@@ -65,9 +65,7 @@ class LocalOperation
                               ->withHeader('Authorization', 'Bearer '.$this->accessToken->token)
                               ->withHeader('Accept', 'application/json')
                               ->withPayload(['deployer-token' => app('config')->get('deployer.token')])
-                              ->call(deployer_remote_url('predeployment-check'));
-
-        dd($response);
+                              ->call(deployer_remote_url('prechecks'));
 
         $this->checkResponseAcknowledgement($response);
     }
@@ -100,7 +98,7 @@ class LocalOperation
     private function checkAccessToken(?ResponsePayload $response)
     {
         if (! $response->isOk || data_get($response->payload->json, 'payload.access_token') != null) {
-            throw new ExecutionException('Error trying to obtain an access token');
+            throw new ResponseException($response);
         }
     }
 
