@@ -2,6 +2,8 @@
 
 namespace Waygou\Deployer;
 
+use Chumper\Zipper\Facades\Zipper;
+use Illuminate\Support\Facades\File;
 use Waygou\Deployer\Exceptions\LocalException;
 use Waygou\Deployer\Exceptions\ResponseException;
 
@@ -17,9 +19,48 @@ class LocalOperation
 {
     private $accessToken;
 
+    private function dua_get_files($path)
+    {
+        $dir_paths = array();
+        foreach (glob($path . "/*", GLOB_ONLYDIR) as $filename) {
+            $dir_paths[] = $filename;
+            $a = glob("$filename/*", GLOB_ONLYDIR);
+            if (is_array($a)) {
+                $b = $this->dua_get_files("$filename/*");
+                foreach ($b as $c) {
+                    $dir_paths[] = $c;
+                }
+            }
+        }
+        return $dir_paths;
+    }
+
+    public function CreateCodebaseZip()
+    {
+
+
+
+
+        File::delete(base_path('backups/test.zip'));
+        $files = glob(base_path('packages/waygou/deployer'));
+        Zipper::make(base_path('backups/test.zip'))->folder('packages/waygou/deployer')->add($files)->close();
+
+        dd('done.');
+
+        // Check codebase content configuration.
+        $folders = [];
+        $files = collect(app('config')->get('deployer.codebase.folders'))->each(function ($item) use (&$folders) {
+            $folders = array_merge($this->dua_get_files("{$item}"), $folders);
+        });
+
+        dd($folders);
+
+        return $zipFilename;
+    }
+
     /**
      * The pre-checks actions correspond to:
-     * - Verify if the backups directory is writeable.
+     * - Verify if the backup directory is writeable.
      * @return void
      */
     public function preChecks()

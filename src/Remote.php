@@ -14,6 +14,16 @@ class Remote
 
 class RemoteOperation
 {
+    public static function new(...$args)
+    {
+        return new self(...$args);
+    }
+
+    /**
+     * The pre-checks actions correspond to:
+     * - Verify if the backup directory is writeable.
+     * @return void
+     */
     public function preChecks()
     {
         $backupPath = app('config')->get('deployer.codebase.backup_path');
@@ -21,14 +31,9 @@ class RemoteOperation
             @mkdir($backupPath, 0755, true);
 
             return is_writable($backupPath) ?
-            true : function () {
-                throw new RemoteException('Remote Server directory not writeable');
-            };
+                true : function () {
+                    throw new RemoteException('Remote Server directory not writeable');
+                };
         }
-    }
-
-    public static function new(...$args)
-    {
-        return new self(...$args);
     }
 }

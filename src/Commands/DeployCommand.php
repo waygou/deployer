@@ -43,6 +43,11 @@ final class DeployCommand extends Command
     {
         $this->showHero();
 
+        $this->createZip();
+        $bar->advance();
+
+        dd('end.');
+
         $bar = $this->output->createProgressBar(11);
         $bar->start();
 
@@ -55,14 +60,10 @@ final class DeployCommand extends Command
         $this->askRemoteForPreChecks();
         $bar->advance();
 
-        dd('-- stop --');
-
-        $this->bulkInfo(2, '*** Remote server pre-deployment checks ***', 1);
-        $this->executeOrFail(function () {
-            Local::getAccessToken()
-                 ->askRemoteForPreChecks();
-        }, 'remote_prechecks_failed');
+        $this->createZip();
         $bar->advance();
+
+        dd('-- on the zip --');
 
         $this->bulkInfo(2, '*** Local codebase package creation (Zip) ***', 1);
         Local::zipCodeBase();
@@ -99,6 +100,17 @@ final class DeployCommand extends Command
         $bar->finish();
 
         $this->bulkInfo(2, '*** All good! ***', 1);
+    }
+
+    protected function createZip()
+    {
+        $this->bulkInfo(2, '*** Local codebase package creation (Zip) ***', 1);
+
+        rescue(function () {
+            Local::CreateCodebaseZip();
+        }, function () {
+            $this->gracefullyExit();
+        });
     }
 
     protected function askRemoteForPreChecks()
