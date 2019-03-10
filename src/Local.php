@@ -21,8 +21,8 @@ class LocalOperation
 
     private function dua_get_files($path)
     {
-        $dir_paths = array();
-        foreach (glob($path . "/*", GLOB_ONLYDIR) as $filename) {
+        $dir_paths = [];
+        foreach (glob($path.'/*', GLOB_ONLYDIR) as $filename) {
             $dir_paths[] = $filename;
             $a = glob("$filename/*", GLOB_ONLYDIR);
             if (is_array($a)) {
@@ -32,15 +32,12 @@ class LocalOperation
                 }
             }
         }
+
         return $dir_paths;
     }
 
     public function CreateCodebaseZip()
     {
-
-
-
-
         File::delete(base_path('backups/test.zip'));
         $files = glob(base_path('packages/waygou/deployer'));
         Zipper::make(base_path('backups/test.zip'))->folder('packages/waygou/deployer')->add($files)->close();
