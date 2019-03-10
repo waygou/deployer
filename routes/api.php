@@ -1,10 +1,7 @@
 <?php
 
-Route::post('prechecks', PreChecksController::class)
-     ->name('prechecks');
-
-Route::post('ping', PingController::class)
-     ->name('ping');
+Route::post('prechecks', PreChecksController::class)->name('prechecks');
+Route::post('ping', PingController::class)->name('ping');
 
 /*
 Route::fallback(function () {
