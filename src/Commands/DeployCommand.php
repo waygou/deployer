@@ -17,6 +17,8 @@ final class DeployCommand extends Command
      */
     protected $signature = 'deploy';
 
+    private $zipFilename = null;
+
     /**
      * The console command description.
      *
@@ -42,11 +44,6 @@ final class DeployCommand extends Command
     public function handle()
     {
         $this->showHero();
-
-        $this->createZip();
-        $bar->advance();
-
-        dd('end.');
 
         $bar = $this->output->createProgressBar(11);
         $bar->start();
@@ -107,7 +104,7 @@ final class DeployCommand extends Command
         $this->bulkInfo(2, '*** Local codebase package creation (Zip) ***', 1);
 
         rescue(function () {
-            Local::CreateCodebaseZip();
+            $this->zipFilename = Local::CreateCodebaseZip();
         }, function () {
             $this->gracefullyExit();
         });

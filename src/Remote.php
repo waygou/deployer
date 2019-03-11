@@ -26,14 +26,14 @@ class RemoteOperation
      */
     public function preChecks()
     {
-        $backupPath = app('config')->get('deployer.codebase.backup_path');
-        if (filled($backupPath)) {
-            @mkdir($backupPath, 0755, true);
-
-            return is_writable($backupPath) ?
-                true : function () {
-                    throw new RemoteException('Remote Server directory not writeable');
-                };
+        $storagePath = app('config')->get('deployer.storage.path');
+        if (!is_dir($storagePath)) {
+            mkdir($backupPath, 0755, true);
         }
+
+        return is_writable($storagePath) ?
+            true : function () {
+                throw new RemoteException('Local storage directory not writeable');
+            };
     }
 }

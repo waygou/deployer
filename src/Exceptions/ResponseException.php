@@ -16,10 +16,22 @@ class ResponseException extends Exception
     public function __construct(ResponsePayload $response)
     {
         $this->response = $response;
-        $this->reason = $response->instance->getReasonPhrase();
-        $this->status = $response->instance->getStatusCode();
-        $this->message = data_get($response->payload->json, 'message') ??
-                         data_get($response->payload->json, 'exception');
+
+        if (isset($response->instance)) {
+            $this->reason = $response->instance->getReasonPhrase();
+            $this->status = $response->instance->getStatusCode();
+        }
+
+        if (isset($response->exception)) {
+            $this->reason = $response->exception->message;
+            $this->status = null;
+            $this->message = $response->exception->message;
+        }
+
+        if (isset($response->payload)) {
+            $this->message = data_get($response->payload->json, 'message') ??
+                             data_get($response->payload->json, 'exception');
+        }
 
         parent::__construct($this->message);
     }

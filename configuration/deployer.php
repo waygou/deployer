@@ -36,9 +36,7 @@ return [
     // What's the codebase you want to upload to your remote server?
     'codebase' => [
         'folders' => [],
-        'files' => [],
-        // What's the folder where you want to keep the backups in your environment?
-        'backup_path' => base_path('backups'),
+        'files' => []
     ],
 
     /*

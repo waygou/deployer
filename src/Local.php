@@ -4,6 +4,7 @@ namespace Waygou\Deployer;
 
 use Chumper\Zipper\Facades\Zipper;
 use Illuminate\Support\Facades\File;
+use Illuminate\Filesystem\Filesystem;
 use Waygou\Deployer\Exceptions\LocalException;
 use Waygou\Deployer\Exceptions\ResponseException;
 
@@ -18,59 +19,59 @@ class Local
 class LocalOperation
 {
     private $accessToken;
+    protected $zipFilename;
 
-    private function dua_get_files($path)
-    {
-        $dir_paths = [];
-        foreach (glob($path.'/*', GLOB_ONLYDIR) as $filename) {
-            $dir_paths[] = $filename;
-            $a = glob("$filename/*", GLOB_ONLYDIR);
-            if (is_array($a)) {
-                $b = $this->dua_get_files("$filename/*");
-                foreach ($b as $c) {
-                    $dir_paths[] = $c;
-                }
-            }
-        }
-
-        return $dir_paths;
-    }
-
+    /**
+     * Creates a zip file with the respective codebase configuration resources.
+     * @return string The zip filename.
+     */
     public function CreateCodebaseZip()
     {
-        File::delete(base_path('backups/test.zip'));
-        $files = glob(base_path('packages/waygou/deployer'));
-        Zipper::make(base_path('backups/test.zip'))->folder('packages/waygou/deployer')->add($files)->close();
+        $this->filename = uniqid() . '.zip';
+        $storagePath = app('config')->get('deployer.storage.path');
 
-        dd('done.');
+        // Testing purposes.
+        $file = new Filesystem;
+        $file->cleanDirectory($storagePath);
+        // ***
 
-        // Check codebase content configuration.
-        $folders = [];
-        $files = collect(app('config')->get('deployer.codebase.folders'))->each(function ($item) use (&$folders) {
-            $folders = array_merge($this->dua_get_files("{$item}"), $folders);
+        $zip = Zipper::make("{$storagePath}/{$this->filename}");
+
+        /**
+         * Add the codebase files and folders.
+         * Collection iterator to add each resource to the Zipper object.
+         * Calculation on the folder path for the files iterator using the
+         * pathinfo function.
+         */
+        collect(app('config')->get('deployer.codebase.folders'))->each(function ($item) use (&$zip) {
+            $zip->folder($item)->add(base_path($item));
         });
 
-        dd($folders);
+        collect(app('config')->get('deployer.codebase.files'))->each(function ($item) use (&$zip) {
+            $fileData = pathinfo($item);
+            $zip->folder($fileData['dirname'])->add(base_path($item));
+        });
 
-        return $zipFilename;
+        $zip->close();
+        return $this->filename;
     }
 
     /**
      * The pre-checks actions correspond to:
-     * - Verify if the backup directory is writeable.
+     * - Verify if the backup directory inside app/deployer storage is writeable.
      * @return void
      */
     public function preChecks()
     {
-        $backupPath = app('config')->get('deployer.codebase.backup_path');
-
-        if ($backupPath) {
-            @mkdir($backupPath, 0755, true);
-
-            if (! is_writable($backupPath)) {
-                throw new LocalException('Backup folder not writeable');
-            }
+        $storagePath = app('config')->get('deployer.storage.path');
+        if (!is_dir($storagePath)) {
+            mkdir($backupPath, 0755, true);
         }
+
+        return is_writable($storagePath) ?
+            true : function () {
+                throw new LocalException('Local storage directory not writeable');
+            };
     }
 
     /**
@@ -81,11 +82,11 @@ class LocalOperation
     public function getAccessToken()
     {
         $response = RESTCaller::asPost()
-                               ->withPayload(['grant_type'    => 'client_credentials',
-                                              'client_id'     => app('config')->get('deployer.oauth.client'),
-                                              'client_secret' => app('config')->get('deployer.oauth.secret'), ])
-                                ->withHeader('Accept', 'application/json')
-                               ->call(app('config')->get('deployer.remote.url').'/oauth/token');
+                           ->withPayload(['grant_type'    => 'client_credentials',
+                                          'client_id'     => app('config')->get('deployer.oauth.client'),
+                                          'client_secret' => app('config')->get('deployer.oauth.secret'), ])
+                            ->withHeader('Accept', 'application/json')
+                           ->call(app('config')->get('deployer.remote.url').'/oauth/token');
 
         $this->checkAccessToken($response);
 
@@ -100,10 +101,10 @@ class LocalOperation
     public function askRemoteForPreChecks()
     {
         $response = RESTCaller::asPost()
-                              ->withHeader('Authorization', 'Bearer '.$this->accessToken->token)
-                              ->withHeader('Accept', 'application/json')
-                              ->withPayload(['deployer-token' => app('config')->get('deployer.token')])
-                              ->call(deployer_remote_url('prechecks'));
+                          ->withHeader('Authorization', 'Bearer '.$this->accessToken->token)
+                          ->withHeader('Accept', 'application/json')
+                          ->withPayload(['deployer-token' => app('config')->get('deployer.token')])
+                          ->call(deployer_remote_url('prechecks'));
 
         $this->checkResponseAcknowledgement($response);
     }
@@ -111,10 +112,10 @@ class LocalOperation
     public function ping()
     {
         $response = RESTCaller::asPost()
-                              ->withHeader('Authorization', 'Bearer '.$this->accessToken->token)
-                              ->withHeader('Accept', 'application/json')
-                              ->withPayload(['deployer-token' => app('config')->get('deployer.token')])
-                              ->call(deployer_remote_url('ping'));
+                          ->withHeader('Authorization', 'Bearer '.$this->accessToken->token)
+                          ->withHeader('Accept', 'application/json')
+                          ->withPayload(['deployer-token' => app('config')->get('deployer.token')])
+                          ->call(deployer_remote_url('ping'));
 
         $this->checkResponseAcknowledgement($response);
     }

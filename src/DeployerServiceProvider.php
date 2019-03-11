@@ -21,6 +21,17 @@ class DeployerServiceProvider extends ServiceProvider
         $this->registerMigrations();
         $this->loadRemoteRoutes();
         $this->registerAuthGuard();
+        $this->registerStorage();
+    }
+
+    private function registerStorage()
+    {
+        $this->app['config']->set('filesystems.disks', [
+            'deployer' => [
+                'driver' => 'local',
+                'root' => app('config')->get('deployer.storage.path')
+            ]
+        ]);
     }
 
     private function registerAuthGuard()
