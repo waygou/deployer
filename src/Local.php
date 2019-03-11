@@ -27,7 +27,7 @@ class LocalOperation
      */
     public function CreateCodebaseZip()
     {
-        $this->filename = uniqid() . '.zip';
+        $this->filename = uniqid().'.zip';
         $storagePath = app('config')->get('deployer.storage.path');
 
         // Testing purposes.
@@ -37,7 +37,7 @@ class LocalOperation
 
         $zip = Zipper::make("{$storagePath}/{$this->filename}");
 
-        /**
+        /*
          * Add the codebase files and folders.
          * Collection iterator to add each resource to the Zipper object.
          * Calculation on the folder path for the files iterator using the
@@ -53,6 +53,7 @@ class LocalOperation
         });
 
         $zip->close();
+
         return $this->filename;
     }
 
@@ -64,7 +65,7 @@ class LocalOperation
     public function preChecks()
     {
         $storagePath = app('config')->get('deployer.storage.path');
-        if (!is_dir($storagePath)) {
+        if (! is_dir($storagePath)) {
             mkdir($backupPath, 0755, true);
         }
 
