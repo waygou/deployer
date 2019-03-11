@@ -36,7 +36,7 @@ return [
     // What's the codebase you want to upload to your remote server?
     'codebase' => [
         'folders' => [],
-        'files' => []
+        'files' => [],
     ],
 
     /*

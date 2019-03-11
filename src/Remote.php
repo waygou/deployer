@@ -27,7 +27,7 @@ class RemoteOperation
     public function preChecks()
     {
         $storagePath = app('config')->get('deployer.storage.path');
-        if (!is_dir($storagePath)) {
+        if (! is_dir($storagePath)) {
             mkdir($backupPath, 0755, true);
         }
 

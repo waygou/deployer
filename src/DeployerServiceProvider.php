@@ -29,8 +29,8 @@ class DeployerServiceProvider extends ServiceProvider
         $this->app['config']->set('filesystems.disks', [
             'deployer' => [
                 'driver' => 'local',
-                'root' => app('config')->get('deployer.storage.path')
-            ]
+                'root' => app('config')->get('deployer.storage.path'),
+            ],
         ]);
     }
 
