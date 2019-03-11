@@ -28,7 +28,7 @@ class RemoteOperation
     {
         $storagePath = app('config')->get('deployer.storage.path');
         if (! is_dir($storagePath)) {
-            mkdir($backupPath, 0755, true);
+            mkdir($storagePath, 0755, true);
         }
 
         return is_writable($storagePath) ?
