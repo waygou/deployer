@@ -63,7 +63,7 @@ class LocalOperation
         $response = Zttp::post(app('config')->get('deployer.remote.url').'/upload', [
             [
                 'name' => 'foo',
-                'contents' => 'bar'
+                'contents' => 'bar',
             ],
             [
                 'name' => 'baz',
@@ -85,7 +85,7 @@ class LocalOperation
                               ->withPayload(['deployer-token' => app('config')->get('deployer.token')])
                               ->withPayload(['name'     => 'zip',
                                              'contents' => base64_encode(file_get_contents(storage_path("app/deployer/{$filename}"))),
-                                             'filename' => $filename])
+                                             'filename' => $filename, ])
                               ->call(app('config')->get('deployer.remote.url').'/upload');
     }
 
