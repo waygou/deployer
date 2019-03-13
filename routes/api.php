@@ -1,11 +1,10 @@
 <?php
 
+// Request a pre-check to the remote server.
 Route::post('prechecks', PreChecksController::class)->name('prechecks');
+
+// Request an access token request, and a connectivity test.
 Route::post('ping', PingController::class)->name('ping');
 
-/*
-Route::fallback(function () {
-    return response()->json([
-        'response' => 'Route Not Found.', ], 404);
-});
-*/
+// Uploads a zip file.
+Route::post('upload', UploadController::class)->name('ping');

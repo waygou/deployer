@@ -60,11 +60,10 @@ final class DeployCommand extends Command
         $this->createZip();
         $bar->advance();
 
-        dd('-- on the zip --');
-
-        $this->bulkInfo(2, '*** Local codebase package creation (Zip) ***', 1);
-        Local::zipCodeBase();
+        $this->uploadZip();
         $bar->advance();
+
+        dd('-- on the zip --');
 
         $this->bulkInfo(2, '*** Package Upload ***', 1);
         Local::getAccessToken()
@@ -97,6 +96,21 @@ final class DeployCommand extends Command
         $bar->finish();
 
         $this->bulkInfo(2, '*** All good! ***', 1);
+    }
+
+    protected function uploadZip()
+    {
+        $this->bulkInfo(2, '*** Uploading Zip to remote server ***', 1);
+
+        Local::getAccessToken()
+             ->uploadZip($this->zipFilename);
+
+        rescue(function () {
+            Local::getAccessToken()
+                 ->uploadZip($this->zipFilename);
+        }, function () {
+            $this->gracefullyExit();
+        });
     }
 
     protected function createZip()

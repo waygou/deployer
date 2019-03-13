@@ -2,6 +2,7 @@
 
 namespace Waygou\Deployer;
 
+use Zttp\Zttp;
 use Chumper\Zipper\Facades\Zipper;
 use Illuminate\Support\Facades\File;
 use Illuminate\Filesystem\Filesystem;
@@ -55,6 +56,37 @@ class LocalOperation
         $zip->close();
 
         return $this->filename;
+    }
+
+    public function uploadZip(string $filename)
+    {
+        $response = Zttp::post(app('config')->get('deployer.remote.url').'/upload', [
+            [
+                'name' => 'foo',
+                'contents' => 'bar'
+            ],
+            [
+                'name' => 'baz',
+                'contents' => 'qux',
+            ],
+            [
+                'name' => 'test-file',
+                'contents' => 'test contents',
+                'filename' => 'test-file.txt',
+            ],
+        ]);
+
+        dd($response);
+
+        $response = RESTCaller::asPost()
+                              ->asMultipart()
+                              ->withHeader('Authorization', 'Bearer '.$this->accessToken->token)
+                              ->withHeader('Accept', 'application/json')
+                              ->withPayload(['deployer-token' => app('config')->get('deployer.token')])
+                              ->withPayload(['name'     => 'zip',
+                                             'contents' => base64_encode(file_get_contents(storage_path("app/deployer/{$filename}"))),
+                                             'filename' => $filename])
+                              ->call(app('config')->get('deployer.remote.url').'/upload');
     }
 
     /**
