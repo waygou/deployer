@@ -39,7 +39,7 @@ class RemoteOperation
 
     /**
      * Saves a codebase package into the deployer storage folder.
-     * For each new codebase upload, if
+     * For each new codebase upload, if.
      * @param  string $codebase Codebase package, base64 encoded.
      * @return void
      */

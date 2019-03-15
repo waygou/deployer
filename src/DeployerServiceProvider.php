@@ -4,7 +4,6 @@ namespace Waygou\Deployer;
 
 use Laravel\Passport\Passport;
 use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
 use Waygou\Deployer\Commands\DeployCommand;
 use Waygou\Deployer\Commands\InstallLocalCommand;

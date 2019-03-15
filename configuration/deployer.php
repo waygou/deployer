@@ -41,7 +41,7 @@ return [
 
     // Storage to put the zip files that are created.
     'storage' => [
-        'path' => storage_path('app/deployer')
+        'path' => storage_path('app/deployer'),
     ],
 
     /*
@@ -52,7 +52,7 @@ return [
         'secret' => env('DEPLOYER_OAUTH_SECRET'),
     ],
 
-    /**
+    /*
      * Local / Remote token. Must be the same in both environments.
      */
     'token' => env('DEPLOYER_TOKEN'),
