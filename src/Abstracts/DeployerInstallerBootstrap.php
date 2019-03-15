@@ -25,7 +25,7 @@ abstract class DeployerInstallerBootstrap extends Command
     public function handle()
     {
         // Quick way to clear the screen :)
-        print("\033[2J\033[;H");
+        echo "\033[2J\033[;H";
 
         $this->info(ascii_title());
     }
