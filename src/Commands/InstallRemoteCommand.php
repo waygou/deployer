@@ -4,6 +4,7 @@ namespace Waygou\Deployer\Commands;
 
 use Laravel\Passport\Client;
 use Illuminate\Support\Facades\DB;
+use sixlive\DotenvEditor\DotenvEditor;
 use Waygou\Deployer\Abstracts\DeployerInstallerBootstrap;
 
 class InstallRemoteCommand extends DeployerInstallerBootstrap
@@ -23,35 +24,35 @@ class InstallRemoteCommand extends DeployerInstallerBootstrap
 
     public function handle()
     {
+        parent::handle();
+
         $this->steps = 5;
 
-        // In case of a re-installation, delete all the .env deployer data.
-        $this->unsetEnvData();
-
         if (!is_dir(base_path('vendor/laravel/passport'))) {
-            $this->installLaravelPassport();
             $this->steps++;
         };
 
-        $this->publishDeployerResources();
+        $this->bulkInfo(2, 'Installing Deployer on a REMOTE environment...', 1);
         $bar = $this->output->createProgressBar($this->steps);
         $bar->start();
 
-        if (! $this->checkEnv()) {
-            return;
-        }
-
-        $this->artisanMigrate();
+        // In case of a re-installation, delete all the .env deployer data.
+        $this->bulkInfo(2, 'Cleaning old .env deployer keys (if they exist)...', 1);
+        $this->unsetEnvData();
         $bar->advance();
 
-        $this->registerRemoteType();
+        if (!is_dir(base_path('vendor/laravel/passport'))) {
+            $this->installLaravelPassport();
+        };
+
+        $this->publishDeployerResources();
         $bar->advance();
 
         $this->installClientCredentialsGrant();
         $this->getClientCredentialsGrant();
         $bar->advance();
 
-        $this->registerRemoteToken();
+        $this->registerEnvKeys();
         $bar->advance();
 
         $this->clearConfigurationCache();
@@ -60,9 +61,26 @@ class InstallRemoteCommand extends DeployerInstallerBootstrap
         $this->showLocalInstallInformation();
     }
 
+    protected function registerEnvKeys()
+    {
+        $this->bulkInfo(2, 'Registering .env keys...', 1);
+
+        $editor = new DotenvEditor;
+        $editor->load(base_path('.env'));
+        $editor->set('DEPLOYER_TYPE', 'remote');
+        $editor->set('DEPLOYER_OAUTH_CLIENT', $this->client);
+        $editor->set('DEPLOYER_OAUTH_SECRET', $this->secret);
+
+        $this->token = strtoupper(str_random(10));
+
+        $editor->set('DEPLOYER_TOKEN', $this->token);
+        $editor->save();
+    }
+
     protected function showLocalInstallInformation()
     {
-        $this->bulkInfo(2, 'Please install Deployer on your local Laravel app and run the following artisan command:', 1);
+        $this->bulkInfo(2, 'ALL DONE!', 0);
+        $this->bulkInfo(1, 'Please install Deployer on your local Laravel app and run the following artisan command:', 1);
         $this->info("php artisan deployer:install-local --client={$this->client} --secret={$this->secret} --token={$this->token}");
     }
 
@@ -75,7 +93,7 @@ class InstallRemoteCommand extends DeployerInstallerBootstrap
 
     protected function installClientCredentialsGrant()
     {
-        $this->bulkInfo(2, 'Installing client credentials grant...', 1);
+        $this->bulkInfo(2, 'Installing Laravel Password client credentials grant...', 1);
         $appName = 'Laravel Deployer Grant Client';
         $this->runProcess("php artisan passport:client --client
                                                        --name=\"{$appName}\"
@@ -90,35 +108,5 @@ class InstallRemoteCommand extends DeployerInstallerBootstrap
         $this->runProcess('php artisan migrate --quiet');
         $this->runProcess('php artisan passport:install --quiet');
         $this->runProcess('composer dumpautoload');
-    }
-
-    protected function registerRemoteType()
-    {
-        $this->bulkInfo(2, 'Registering Deployer Remote Type in your .env file...', 1);
-        $this->env->set('DEPLOYER_TYPE', 'remote');
-        $this->save();
-    }
-
-    protected function registerRemoteToken()
-    {
-        /*
-         * Register the remote<->local token, used on all REST transactions.
-         * This is an extra security layer between your local and remote environments.
-         */
-        $this->bulkInfo(2, 'Registering Deployer token and adding it to your .env file...', 1);
-        $this->token = $this->token ?? str_random(10);
-        file_put_contents(base_path('.env'), PHP_EOL."DEPLOYER_TOKEN={$this->token}", FILE_APPEND) ?: $this->error('.env file without writing permissions. Please check your .env file writing permissions. Aborting.');
-    }
-
-    protected function checkEnv()
-    {
-        if (app('config')->get('app.debug') == false) {
-            // Security check.
-            $this->info('');
-
-            return $this->confirm("Looks like your remote server doesn't have debug activated. Do you wish to continue?");
-        }
-
-        return true;
     }
 }

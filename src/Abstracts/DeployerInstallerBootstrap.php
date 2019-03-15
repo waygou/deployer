@@ -3,7 +3,6 @@
 namespace Waygou\Deployer\Abstracts;
 
 use Illuminate\Console\Command;
-use sixlive\DotenvEditor\DotenvEditor;
 use Waygou\Deployer\Concerns\CanRunProcesses;
 use Waygou\Deployer\Concerns\SharedInstallerActions;
 use Waygou\Deployer\Concerns\SimplifiesConsoleOutput;
@@ -23,11 +22,11 @@ abstract class DeployerInstallerBootstrap extends Command
         parent::__construct();
     }
 
-    public function dotEnvInstance()
+    public function handle()
     {
-        $env = new DotenvEditor;
-        $env->load(base_path('.env'));
+        // Quick way to clear the screen :)
+        print("\033[2J\033[;H");
 
-        return $env;
+        $this->info(ascii_title());
     }
 }
