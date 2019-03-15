@@ -12,10 +12,9 @@ class InstallRemoteCommand extends DeployerInstallerBootstrap
     private $client;
     private $secret;
 
-    protected $signature = 'deployer:install-remote
-                            {--skippassport : Skips Laravel Passport installation}';
+    protected $signature = 'deployer:install-remote';
 
-    protected $description = 'Installs Deployer on your Remote Server.';
+    protected $description = 'Installs Deployer on your REMOTE Environment';
 
     public function __construct()
     {
