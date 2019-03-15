@@ -9,7 +9,7 @@ class UploadController extends Controller
 {
     public function __invoke(Request $request)
     {
-        if (!$request->has('codebase')) {
+        if (! $request->has('codebase')) {
             return response_payload(false);
         }
 

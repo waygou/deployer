@@ -52,5 +52,5 @@ function response_payload($result, $payload = [])
 
 function deployer_storage_path($path)
 {
-    return app('config')->get('deployer.storage.path') . "/{$path}";
+    return app('config')->get('deployer.storage.path')."/{$path}";
 }

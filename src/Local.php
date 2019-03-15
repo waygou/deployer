@@ -2,7 +2,6 @@
 
 namespace Waygou\Deployer;
 
-use Zttp\Zttp;
 use Chumper\Zipper\Facades\Zipper;
 use Illuminate\Support\Facades\File;
 use Illuminate\Filesystem\Filesystem;
