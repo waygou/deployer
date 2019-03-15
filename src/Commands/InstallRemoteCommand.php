@@ -16,14 +16,22 @@ class InstallRemoteCommand extends DeployerInstallerBootstrap
 
     protected $description = 'Installs Deployer on your Remote Server.';
 
+    public function __construct()
+    {
+        parent::__construct();
+    }
+
     public function handle()
     {
-        parent::handle();
         $this->steps = 5;
 
-        if (! $this->option('skippassport')) {
+        // In case of a re-installation, delete all the .env deployer data.
+        $this->unsetEnvData();
+
+        if (!is_dir(base_path('vendor/laravel/passport'))) {
             $this->installLaravelPassport();
-        }
+            $this->steps++;
+        };
 
         $this->publishDeployerResources();
         $bar = $this->output->createProgressBar($this->steps);
@@ -87,8 +95,8 @@ class InstallRemoteCommand extends DeployerInstallerBootstrap
     protected function registerRemoteType()
     {
         $this->bulkInfo(2, 'Registering Deployer Remote Type in your .env file...', 1);
-        append_line_to_env('DEPLOYER_TYPE', 'remote') ?:
-        $this->error(self::ERROR_WRITE_PERMISSION);
+        $this->env->set('DEPLOYER_TYPE', 'remote');
+        $this->save();
     }
 
     protected function registerRemoteToken()

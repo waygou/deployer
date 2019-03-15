@@ -5,7 +5,7 @@ namespace Waygou\Deployer\Commands;
 use Illuminate\Console\Command;
 use Waygou\Deployer\Concerns\SimplifiesConsoleOutput;
 
-class LocalInstallConfigCommand extends Command
+class ConfigCommand extends Command
 {
     use SimplifiesConsoleOutput;
 
@@ -14,7 +14,7 @@ class LocalInstallConfigCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'deployer:local-install-config';
+    protected $signature = 'deployer:config';
 
     /**
      * The console command description.

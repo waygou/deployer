@@ -8,7 +8,7 @@ use Illuminate\Support\ServiceProvider;
 use Waygou\Deployer\Commands\DeployCommand;
 use Waygou\Deployer\Commands\InstallLocalCommand;
 use Waygou\Deployer\Commands\InstallRemoteCommand;
-use Waygou\Deployer\Commands\LocalInstallConfigCommand;
+use Waygou\Deployer\Commands\ConfigCommand;
 use Laravel\Passport\Http\Middleware\CheckClientCredentials;
 
 class DeployerServiceProvider extends ServiceProvider
@@ -66,7 +66,7 @@ class DeployerServiceProvider extends ServiceProvider
         $this->commands([
             InstallRemoteCommand::class,
             InstallLocalCommand::class,
-            LocalInstallConfigCommand::class,
+            ConfigCommand::class,
             DeployCommand::class,
         ]);
 
