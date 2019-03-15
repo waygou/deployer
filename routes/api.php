@@ -7,4 +7,4 @@ Route::post('prechecks', PreChecksController::class)->name('prechecks');
 Route::post('ping', PingController::class)->name('ping');
 
 // Uploads a zip file.
-Route::post('upload', UploadController::class)->name('ping');
+Route::post('upload', UploadController::class)->name('upload');

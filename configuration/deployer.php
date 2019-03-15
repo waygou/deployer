@@ -35,8 +35,13 @@ return [
 
     // What's the codebase you want to upload to your remote server?
     'codebase' => [
-        'folders' => [],
-        'files' => [],
+        'folders' => ['App', 'packages/waygou/deployer'],
+        'files' => ['database/factories/UserFactory.php', 'resources/js/app.js'],
+    ],
+
+    // Storage to put the zip files that are created.
+    'storage' => [
+        'path' => storage_path('app/deployer')
     ],
 
     /*
@@ -46,5 +51,9 @@ return [
         'client' => env('DEPLOYER_OAUTH_CLIENT'),
         'secret' => env('DEPLOYER_OAUTH_SECRET'),
     ],
+
+    /**
+     * Local / Remote token. Must be the same in both environments.
+     */
     'token' => env('DEPLOYER_TOKEN'),
 ];

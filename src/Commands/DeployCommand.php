@@ -98,16 +98,13 @@ final class DeployCommand extends Command
         $this->bulkInfo(2, '*** All good! ***', 1);
     }
 
-    protected function uploadZip()
+    protected function uploadCodebase()
     {
-        $this->bulkInfo(2, '*** Uploading Zip to remote server ***', 1);
-
-        Local::getAccessToken()
-             ->uploadZip($this->zipFilename);
+        $this->bulkInfo(2, '*** Uploading Codebase package to remote server ***', 1);
 
         rescue(function () {
             Local::getAccessToken()
-                 ->uploadZip($this->zipFilename);
+                 ->uploadCodebase(deployer_storage_path($this->zipFilename));
         }, function () {
             $this->gracefullyExit();
         });

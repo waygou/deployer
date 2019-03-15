@@ -24,7 +24,6 @@ class RequestPayload
     private $headers = [];
     private $verb = self::HTTP_VERB_GET;
     private $accessToken = null;
-    private $multiPart = false;
 
     public function __construct()
     {
@@ -51,13 +50,6 @@ class RequestPayload
         return $this;
     }
 
-    public function asMultiPart()
-    {
-        $this->multiPart = true;
-
-        return $this;
-    }
-
     public function asGet()
     {
         $this->verb = self::HTTP_VERB_GET;
@@ -69,14 +61,6 @@ class RequestPayload
     {
         try {
             $response = Zttp::withHeaders($this->headers);
-
-            if ($this->multiPart) {
-                $response->asMultipart();
-            }
-
-            if ($url == 'http://localhost:8010/upload') {
-                info($url, $this->payload);
-            }
 
             $response = $response->{$this->verb}($url, $this->payload);
         } catch (ConnectionException | RequestException $e) {

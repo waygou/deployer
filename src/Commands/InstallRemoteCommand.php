@@ -4,9 +4,9 @@ namespace Waygou\Deployer\Commands;
 
 use Laravel\Passport\Client;
 use Illuminate\Support\Facades\DB;
-use Waygou\Deployer\Abstracts\DeployerInstaller;
+use Waygou\Deployer\Abstracts\DeployerInstallerBootstrap;
 
-class InstallRemoteCommand extends DeployerInstaller
+class InstallRemoteCommand extends DeployerInstallerBootstrap
 {
     private $client;
     private $secret;
@@ -72,6 +72,16 @@ class InstallRemoteCommand extends DeployerInstaller
         $this->runProcess("php artisan passport:client --client
                                                        --name=\"{$appName}\"
                                                        --quiet", getcwd());
+    }
+
+    protected function installLaravelPassport()
+    {
+        $this->bulkInfo(2, 'Installing Laravel Passport...', 1);
+        $this->runProcess('composer require laravel/passport');
+        $this->runProcess('php artisan vendor:publish --provider="Laravel\Passport\PassportServiceProvider" --quiet');
+        $this->runProcess('php artisan migrate --quiet');
+        $this->runProcess('php artisan passport:install --quiet');
+        $this->runProcess('composer dumpautoload');
     }
 
     protected function registerRemoteType()

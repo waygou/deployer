@@ -36,4 +36,15 @@ class RemoteOperation
                 throw new RemoteException('Local storage directory not writeable');
             };
     }
+
+    /**
+     * Saves a codebase package into the deployer storage folder.
+     * For each new codebase upload, if
+     * @param  string $codebase Codebase package, base64 encoded.
+     * @return void
+     */
+    public function saveCodebase($codebase)
+    {
+        $stream = base64_decode($codebase);
+    }
 }

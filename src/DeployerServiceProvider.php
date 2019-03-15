@@ -16,11 +16,12 @@ class DeployerServiceProvider extends ServiceProvider
 {
     public function boot()
     {
-        Schema::defaultStringLength(191);
         $this->publishConfiguration();
-        $this->registerMigrations();
-        $this->loadRemoteRoutes();
-        $this->registerAuthGuard();
+
+        if (config('deployer.type') == 'remote') {
+            $this->loadRemoteRoutes();
+        }
+
         $this->registerStorage();
     }
 
@@ -34,26 +35,6 @@ class DeployerServiceProvider extends ServiceProvider
         ]);
     }
 
-    private function registerAuthGuard()
-    {
-        $this->app['config']->set('auth.providers.deployer_locals', [
-            'driver' => 'eloquent',
-            'model' => Local::class,
-        ]);
-
-        $this->app['config']->set('auth.guards.deployer', [
-            'driver' => 'passport',
-            'provider' => 'deployer_locals',
-        ]);
-    }
-
-    protected function registerMigrations()
-    {
-        if ($this->app->runningInConsole()) {
-            $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
-        }
-    }
-
     protected function publishConfiguration()
     {
         if ($this->app->runningInConsole()) {
@@ -65,17 +46,15 @@ class DeployerServiceProvider extends ServiceProvider
 
     protected function loadRemoteRoutes()
     {
-        if (config('deployer.type') == 'remote') {
-            // Load Deployer routes using the api middleware.
-            Route::as('deployer.')
-                 ->middleware('same-token', 'client')
-                 ->namespace('Waygou\Deployer\Http\Controllers')
-                 ->prefix(app('config')->get('deployer.remote.prefix'))
-                 ->group(__DIR__.'/../routes/api.php');
+        // Load Deployer routes using the api middleware.
+        Route::as('deployer.')
+             ->middleware('same-token', 'client')
+             ->namespace('Waygou\Deployer\Http\Controllers')
+             ->prefix(app('config')->get('deployer.remote.prefix'))
+             ->group(__DIR__.'/../routes/api.php');
 
-            // Load Laravel Passport routes.
-            Passport::routes();
-        }
+        // Load Laravel Passport routes.
+        Passport::routes();
     }
 
     public function register()

@@ -30,7 +30,6 @@ function capsule(bool $result, $message = null, $payload = null)
 function deployer_remote_url($path)
 {
     return app('config')->get('deployer.remote.url').
-           '/'.
            deployer_url($path);
 }
 
@@ -49,4 +48,9 @@ function response_payload($result, $payload = [])
     return response()->json([
         'payload' => array_merge(['result'=> $result], $payload),
     ]);
+}
+
+function deployer_storage_path($path)
+{
+    return app('config')->get('deployer.storage.path') . "/{$path}";
 }

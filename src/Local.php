@@ -58,35 +58,22 @@ class LocalOperation
         return $this->filename;
     }
 
-    public function uploadZip(string $filename)
+    /**
+     * Uploads the codebase content to the server, as a zip.
+     * The file is hashed using base64 encoding.
+     * @param  string $filepath Path to the file.
+     * @return [type]           [description]
+     */
+    public function uploadCodebase(string $filepath)
     {
-        $response = Zttp::post(app('config')->get('deployer.remote.url').'/upload', [
-            [
-                'name' => 'foo',
-                'contents' => 'bar',
-            ],
-            [
-                'name' => 'baz',
-                'contents' => 'qux',
-            ],
-            [
-                'name' => 'test-file',
-                'contents' => 'test contents',
-                'filename' => 'test-file.txt',
-            ],
-        ]);
-
-        dd($response);
-
         $response = RESTCaller::asPost()
-                              ->asMultipart()
                               ->withHeader('Authorization', 'Bearer '.$this->accessToken->token)
                               ->withHeader('Accept', 'application/json')
                               ->withPayload(['deployer-token' => app('config')->get('deployer.token')])
-                              ->withPayload(['name'     => 'zip',
-                                             'contents' => base64_encode(file_get_contents(storage_path("app/deployer/{$filename}"))),
-                                             'filename' => $filename, ])
-                              ->call(app('config')->get('deployer.remote.url').'/upload');
+                              ->withPayload(['codebase' => base64_encode(file_get_contents($filepath))])
+                              ->call(deployer_remote_url('upload'));
+
+        $this->checkResponseAcknowledgement($response);
     }
 
     /**

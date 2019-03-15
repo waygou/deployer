@@ -9,7 +9,12 @@ class UploadController extends Controller
 {
     public function __invoke(Request $request)
     {
-        //dd($request->file('zip'));
+        if (!$request->has('codebase')) {
+            return response_payload(false);
+        }
+
+        Remote::saveCodebase($request->input('codebase'));
+
         return response_payload(true);
     }
 }

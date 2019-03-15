@@ -2,9 +2,9 @@
 
 namespace Waygou\Deployer\Commands;
 
-use Waygou\Deployer\Abstracts\DeployerInstaller;
+use Waygou\Deployer\Abstracts\DeployerInstallerBootstrap;
 
-class InstallLocalCommand extends DeployerInstaller
+class InstallLocalCommand extends DeployerInstallerBootstrap
 {
     const ERROR_WRITE_PERMISSION = '.env file without writing permissions. Please check your .env file writing permissions. Aborting.';
 
@@ -21,11 +21,6 @@ class InstallLocalCommand extends DeployerInstaller
                             {--token= : The Remote server token, must be the same}';
 
     protected $description = 'Installs Deployer in your local development environment.';
-
-    public function __construct()
-    {
-        parent::__construct();
-    }
 
     public function handle()
     {
