@@ -10,6 +10,7 @@ use Waygou\Deployer\Abstracts\DeployerInstallerBootstrap;
 class InstallRemoteCommand extends DeployerInstallerBootstrap
 {
     private $client;
+
     private $secret;
 
     protected $signature = 'deployer:install-remote';
@@ -85,7 +86,7 @@ class InstallRemoteCommand extends DeployerInstallerBootstrap
 
     protected function getClientCredentialsGrant()
     {
-        $client = DB::table('oauth_clients')->latest()->first();
+        $client       = DB::table('oauth_clients')->latest()->first();
         $this->client = $client->id;
         $this->secret = $client->secret;
     }
