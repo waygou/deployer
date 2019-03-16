@@ -38,7 +38,7 @@ class DeployerServiceProvider extends ServiceProvider
     {
         if ($this->app->runningInConsole()) {
             $this->publishes([
-            __DIR__.'/../configuration/deployer.php' => config_path('deployer.php'),
+                __DIR__.'/../configuration/deployer.php' => config_path('deployer.php'),
             ], 'deployer-configuration');
         }
     }
