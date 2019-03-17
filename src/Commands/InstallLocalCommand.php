@@ -3,11 +3,10 @@
 namespace Waygou\Deployer\Commands;
 
 use Waygou\Deployer\Abstracts\DeployerInstallerBootstrap;
+use sixlive\DotenvEditor\DotenvEditor;
 
 class InstallLocalCommand extends DeployerInstallerBootstrap
 {
-    const ERROR_WRITE_PERMISSION = '.env file without writing permissions. Please check your .env file writing permissions. Aborting.';
-
     protected $messages = [
         'client.required' => 'The --client option is required.',
         'client.integer'  => 'The --client option needs to be an integer.',
@@ -24,7 +23,8 @@ class InstallLocalCommand extends DeployerInstallerBootstrap
 
     public function handle()
     {
-        $this->showHero();
+        parent::handle();
+
         $this->steps = 6;
 
         $fields = $this->validateOptions();
@@ -37,19 +37,9 @@ class InstallLocalCommand extends DeployerInstallerBootstrap
         $bar = $this->output->createProgressBar($this->steps);
         $bar->start();
 
-        $this->token = $this->option('token');
-        $this->registerToken();
-        $bar->advance();
-
-        $this->client = $this->option('client');
-        $this->registerClient();
-        $bar->advance();
-
-        $this->secret = $this->option('secret');
-        $this->registerSecret();
-        $bar->advance();
-
-        $this->publishDeployerResources();
+        // In case of a re-installation, delete all the .env deployer data.
+        $this->bulkInfo(2, 'Cleaning old .env deployer keys (if they exist)...', 1);
+        $this->unsetEnvData();
         $bar->advance();
 
         $this->info('');
@@ -57,10 +47,11 @@ class InstallLocalCommand extends DeployerInstallerBootstrap
             'What is your remote server url (E.g.: https://www.johnsmith.com) ?',
             'required|url'
         );
-        $this->registerRemoteUrl();
+
+        $this->setEnvData();
         $bar->advance();
 
-        $this->registerLocalType();
+        $this->publishDeployerResources();
         $bar->advance();
 
         $this->clearConfigurationCache();
@@ -69,44 +60,24 @@ class InstallLocalCommand extends DeployerInstallerBootstrap
         $this->showLastResumedInformation();
     }
 
+    protected function setEnvData()
+    {
+        $this->bulkInfo(0, 'Setting .env variables...', 1);
+
+        $env = new DotenvEditor;
+        $env->load(base_path('.env'));
+        $env->set('DEPLOYER_TYPE', 'local');
+        $env->set('DEPLOYER_TOKEN', $this->option('token'));
+        $env->set('DEPLOYER_OAUTH_CLIENT', $this->option('client'));
+        $env->set('DEPLOYER_OAUTH_SECRET', $this->option('secret'));
+        $env->set('DEPLOYER_REMOTE_URL', $this->url);
+        $env->save();
+        unset($env);
+    }
+
     protected function showLastResumedInformation()
     {
         $this->bulkInfo(2, 'All good! Now you can deploy your codebase to your remote server!', 1);
         $this->info("Don't forget to update your deployer.php configuration file for the correct codebase files and directories that you want to upload.");
-    }
-
-    protected function registerRemoteUrl()
-    {
-        $this->bulkInfo(1, 'Registering Remote URL in your .env file...', 1);
-        append_line_to_env('DEPLOYER_REMOTE_URL', $this->url) ?:
-            $this->error(self::ERROR_WRITE_PERMISSION);
-    }
-
-    protected function registerLocalType()
-    {
-        $this->bulkInfo(2, 'Registering Deployer Local Type in your .env file...', 1);
-        append_line_to_env('DEPLOYER_TYPE', 'local') ?:
-            $this->error(self::ERROR_WRITE_PERMISSION);
-    }
-
-    protected function registerToken()
-    {
-        $this->bulkInfo(2, 'Registering remote token to your .env file...', 1);
-        append_line_to_env('DEPLOYER_TOKEN', $this->token) ?:
-            $this->error(self::ERROR_WRITE_PERMISSION);
-    }
-
-    protected function registerSecret()
-    {
-        $this->bulkInfo(2, 'Registering OAuth secret to your .env file...', 1);
-        append_line_to_env('DEPLOYER_OAUTH_SECRET', $this->secret) ?:
-            $this->error(self::ERROR_WRITE_PERMISSION);
-    }
-
-    protected function registerClient()
-    {
-        $this->bulkInfo(2, 'Registering Client id to your .env file...', 1);
-        append_line_to_env('DEPLOYER_OAUTH_CLIENT', $this->client) ?:
-            $this->error(self::ERROR_WRITE_PERMISSION);
     }
 }

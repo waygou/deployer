@@ -2,11 +2,11 @@
 
 namespace Waygou\Deployer\Commands;
 
-use Waygou\Deployer\Local;
-use Illuminate\Console\Command;
+use Waygou\Deployer\Abstracts\DeployerInstallerBootstrap;
 use Waygou\Deployer\Concerns\SimplifiesConsoleOutput;
+use Waygou\Deployer\Local;
 
-final class DeployCommand extends Command
+final class DeployCommand extends DeployerInstallerBootstrap
 {
     use SimplifiesConsoleOutput;
 
@@ -16,8 +16,6 @@ final class DeployCommand extends Command
      * @var string
      */
     protected $signature = 'deploy';
-
-    private $zipFilename = null;
 
     /**
      * The console command description.
@@ -43,12 +41,15 @@ final class DeployCommand extends Command
      */
     public function handle()
     {
-        $this->showHero();
+        parent::handle();
 
-        $bar = $this->output->createProgressBar(11);
+        $this->steps = 10;
+
+        $this->bulkInfo(2, 'Starting deployment...', 1);
+        $bar = $this->output->createProgressBar($this->steps);
         $bar->start();
 
-        $this->preChecks();
+        $this->runPreChecks();
         $bar->advance();
 
         $this->pingRemote();
@@ -145,7 +146,7 @@ final class DeployCommand extends Command
         });
     }
 
-    protected function preChecks()
+    protected function runPreChecks()
     {
         $this->bulkInfo(2, '*** Local environment pre-deployment checks ***', 1);
         rescue(function () {

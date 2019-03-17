@@ -66,7 +66,6 @@ class DeployerServiceProvider extends ServiceProvider
         $this->commands([
             InstallRemoteCommand::class,
             InstallLocalCommand::class,
-            ConfigCommand::class,
             DeployCommand::class,
         ]);
 
