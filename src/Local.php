@@ -80,7 +80,7 @@ class LocalOperation
             mkdir($storagePath, 0755, true);
         }
 
-        if (!is_writable($storagePath)) {
+        if (! is_writable($storagePath)) {
             throw new LocalException('Local storage directory not writeable');
         }
     }
