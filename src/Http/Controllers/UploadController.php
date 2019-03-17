@@ -2,10 +2,10 @@
 
 namespace Waygou\Deployer\Http\Controllers;
 
-use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
 use Waygou\Deployer\Support\Remote;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Validator;
 
 class UploadController extends Controller
 {
@@ -14,7 +14,7 @@ class UploadController extends Controller
         $validator = Validator::make($request->all(), [
             'codebase'    => 'required',
             'transaction' => 'required',
-            'runbook'     => 'required'
+            'runbook'     => 'required',
         ]);
 
         if ($validator->fails()) {
