@@ -1,6 +1,6 @@
 <?php
 
-namespace Waygou\Deployer;
+namespace Waygou\Deployer\Support;
 
 use Waygou\Deployer\Exceptions\RemoteException;
 

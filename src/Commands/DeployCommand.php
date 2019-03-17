@@ -2,7 +2,7 @@
 
 namespace Waygou\Deployer\Commands;
 
-use Waygou\Deployer\Local;
+use Waygou\Deployer\Support\Local;
 use Waygou\Deployer\Concerns\SimplifiesConsoleOutput;
 use Waygou\Deployer\Abstracts\DeployerInstallerBootstrap;
 
@@ -60,10 +60,7 @@ final class DeployCommand extends DeployerInstallerBootstrap
         $this->createZip();
         $bar->advance();
 
-        $this->bulkInfo(2, 'Uploading package to remote environment...', 1);
-        Local::getAccessToken()
-             ->uploadCodebase($this->transaction);
-        $bar->advance();
+        $this->uploadCodebase();
 
         dd('-- *** --');
 
@@ -97,7 +94,7 @@ final class DeployCommand extends DeployerInstallerBootstrap
 
     protected function uploadCodebase()
     {
-        $this->bulkInfo(2, '*** Uploading Codebase package to remote server ***', 1);
+        $this->bulkInfo(2, 'Uploading package to remote environment...', 1);
 
         rescue(function () {
             Local::getAccessToken()

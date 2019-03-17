@@ -2,23 +2,28 @@
 
 namespace Waygou\Deployer\Http\Controllers;
 
-use Waygou\Deployer\Remote;
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
+use Waygou\Deployer\Support\Remote;
 
 class UploadController extends Controller
 {
     public function __invoke(Request $request)
     {
-        if (! $request->has('codebase')) {
-            return response_payload(false, ['message' => 'No codebase content']);
+        $validator = Validator::make($request->all(), [
+            'codebase'    => 'required',
+            'transaction' => 'required',
+            'runbook'     => 'required'
+        ]);
+
+        if ($validator->fails()) {
+            return response_payload(false, ['message'=> $validator->errors()->first()], 201);
         }
 
-        if (! $request->has('transaction')) {
-            return response_payload(false, ['message' => 'No transaction code defined']);
-        }
+        $codebaseRepo =
 
-        Remote::saveCodebase($request->input('codebase'));
+        Remote::storeCodebaseRepository();
 
         return response_payload(true);
     }

@@ -16,6 +16,7 @@ class ResponseException extends Exception
     public function __construct(ResponsePayload $response)
     {
         $this->response = $response;
+        $this->message = 'Unknown ResponsePayload exception. Sorry about that.';
 
         if (isset($response->instance)) {
             $this->reason = $response->instance->getReasonPhrase();

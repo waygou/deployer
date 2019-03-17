@@ -1,13 +1,13 @@
 <?php
 
-namespace Waygou\Deployer;
+namespace Waygou\Deployer\Support;
 
 use Zttp\Zttp;
 use Zttp\ZttpResponse;
 use Zttp\ConnectionException;
 use GuzzleHttp\Exception\RequestException;
 
-class RESTCaller
+class ReSTCaller
 {
     public static function __callStatic($method, $args)
     {
@@ -99,7 +99,7 @@ class ResponsePayload
         $this->payload->raw = $response->body();
         $this->payload->json = $response->json();
 
-        $this->isOk = $response->isOk();
+        $this->isOk = $response->isOk() && $response->status() == 200;
         $this->instance = $response;
     }
 }

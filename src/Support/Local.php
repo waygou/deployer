@@ -1,12 +1,13 @@
 <?php
 
-namespace Waygou\Deployer;
+namespace Waygou\Deployer\Support;
 
 use Chumper\Zipper\Facades\Zipper;
-use Illuminate\Support\Facades\File;
 use Illuminate\Filesystem\Filesystem;
+use Illuminate\Support\Facades\File;
 use Waygou\Deployer\Exceptions\LocalException;
 use Waygou\Deployer\Exceptions\ResponseException;
+use Waygou\Deployer\Support\ReSTCaller;
 
 class Local
 {
@@ -54,7 +55,7 @@ class LocalOperation
 
     public function uploadCodebase(string $transaction)
     {
-        $response = RESTCaller::asPost()
+        $response = ReSTCaller::asPost()
                               ->withHeader('Authorization', 'Bearer '.$this->accessToken->token)
                               ->withHeader('Accept', 'application/json')
                               ->withPayload(['deployer-token' => app('config')->get('deployer.token')])
@@ -92,11 +93,11 @@ class LocalOperation
      */
     public function getAccessToken()
     {
-        $response = RESTCaller::asPost()
+        $response = ReSTCaller::asPost()
                            ->withPayload(['grant_type'    => 'client_credentials',
                                           'client_id'     => app('config')->get('deployer.oauth.client'),
                                           'client_secret' => app('config')->get('deployer.oauth.secret'), ])
-                            ->withHeader('Accept', 'application/json')
+                           ->withHeader('Accept', 'application/json')
                            ->call(app('config')->get('deployer.remote.url').'/oauth/token');
 
         $this->checkAccessToken($response);
@@ -111,7 +112,7 @@ class LocalOperation
 
     public function askRemoteForPreChecks()
     {
-        $response = RESTCaller::asPost()
+        $response = ReSTCaller::asPost()
                           ->withHeader('Authorization', 'Bearer '.$this->accessToken->token)
                           ->withHeader('Accept', 'application/json')
                           ->withPayload(['deployer-token' => app('config')->get('deployer.token')])
@@ -122,7 +123,7 @@ class LocalOperation
 
     public function ping()
     {
-        $response = RESTCaller::asPost()
+        $response = ReSTCaller::asPost()
                           ->withHeader('Authorization', 'Bearer '.$this->accessToken->token)
                           ->withHeader('Accept', 'application/json')
                           ->withPayload(['deployer-token' => app('config')->get('deployer.token')])

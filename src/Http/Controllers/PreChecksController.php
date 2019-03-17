@@ -2,7 +2,7 @@
 
 namespace Waygou\Deployer\Http\Controllers;
 
-use Waygou\Deployer\Remote;
+use Waygou\Deployer\Support\Remote;
 use App\Http\Controllers\Controller;
 
 class PreChecksController extends Controller

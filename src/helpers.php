@@ -45,11 +45,11 @@ function append_line_to_env(string $key, $value)
     return file_put_contents(base_path('.env'), PHP_EOL."{$key}={$value}", FILE_APPEND);
 }
 
-function response_payload($result, $payload = [])
+function response_payload($result, $payload = [], $statusCode = 200)
 {
-    return response()->json([
-        'payload' => array_merge(['result'=> $result], $payload),
-    ]);
+    $data = ['payload' => array_merge(['result'=> $result], $payload)];
+
+    return response(json_encode($data), $statusCode);
 }
 
 function deployer_storage_path($path = null)
