@@ -1,6 +1,5 @@
 <?php
 
-use sixlive\DotenvEditor\DotenvEditor;
 
 function ascii_title()
 {
