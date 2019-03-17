@@ -30,7 +30,7 @@ class InstallRemoteCommand extends DeployerInstallerBootstrap
 
         // Laravel Passport installed?
         if (! is_dir(base_path('vendor/laravel/passport'))) {
-            $this->steps+=5;
+            $this->steps += 5;
         }
 
         $this->bulkInfo(2, 'Installing Deployer on a REMOTE environment...', 1);
