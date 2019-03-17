@@ -2,8 +2,8 @@
 
 namespace Waygou\Deployer\Commands;
 
-use Waygou\Deployer\Abstracts\DeployerInstallerBootstrap;
 use sixlive\DotenvEditor\DotenvEditor;
+use Waygou\Deployer\Abstracts\DeployerInstallerBootstrap;
 
 class InstallLocalCommand extends DeployerInstallerBootstrap
 {
