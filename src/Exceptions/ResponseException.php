@@ -4,7 +4,7 @@ namespace Waygou\Deployer\Exceptions;
 
 use Exception;
 use Illuminate\Support\Facades\Log;
-use Waygou\Deployer\ResponsePayload;
+use Waygou\Deployer\Support\ResponsePayload;
 
 class ResponseException extends Exception
 {

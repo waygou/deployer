@@ -2,10 +2,11 @@
 
 namespace Waygou\Deployer\Support;
 
+use GuzzleHttp\Exception\RequestException;
+use Waygou\Deployer\Support\ResponsePayload;
+use Zttp\ConnectionException;
 use Zttp\Zttp;
 use Zttp\ZttpResponse;
-use Zttp\ConnectionException;
-use GuzzleHttp\Exception\RequestException;
 
 class ReSTCaller
 {
@@ -60,9 +61,8 @@ class RequestPayload
     public function call($url)
     {
         try {
-            $response = Zttp::withHeaders($this->headers);
-
-            $response = $response->{$this->verb}($url, $this->payload);
+            $response = Zttp::withHeaders($this->headers)
+                            ->{$this->verb}($url, $this->payload);
         } catch (ConnectionException | RequestException $e) {
             $exception = $e;
         }
@@ -73,33 +73,5 @@ class RequestPayload
     public static function new(...$args)
     {
         return new self(...$args);
-    }
-}
-
-class ResponsePayload
-{
-    public $isOk = false;
-    public $instance = null;
-    public $exception = null;
-
-    public function __construct(ZttpResponse $response = null, ?\Exception $exception)
-    {
-        if (isset($exception)) {
-            $this->exception = new \StdClass;
-            $this->exception->instance = $exception;
-            $this->exception->message = $exception->getMessage();
-            $this->exception->code = $exception->getCode();
-        }
-
-        if (is_null($response)) {
-            return $this;
-        }
-
-        $this->payload = new \StdClass;
-        $this->payload->raw = $response->body();
-        $this->payload->json = $response->json();
-
-        $this->isOk = $response->isOk() && $response->status() == 200;
-        $this->instance = $response;
     }
 }

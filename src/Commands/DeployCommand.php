@@ -134,6 +134,10 @@ final class DeployCommand extends DeployerInstallerBootstrap
     {
         $this->bulkInfo(2, 'Checking OAuth & remote environment connectivity...', 1);
 
+        Local::getAccessToken();
+
+        dd('flap');
+
         rescue(function () {
             Local::getAccessToken()
                  ->ping();
