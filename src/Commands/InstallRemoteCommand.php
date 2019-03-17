@@ -30,34 +30,34 @@ class InstallRemoteCommand extends DeployerInstallerBootstrap
 
         // Laravel Passport installed?
         if (! is_dir(base_path('vendor/laravel/passport'))) {
-            $this->steps++;
+            $this->steps+=5;
         }
 
         $this->bulkInfo(2, 'Installing Deployer on a REMOTE environment...', 1);
-        $bar = $this->output->createProgressBar($this->steps);
-        $bar->start();
+        $this->bar = $this->output->createProgressBar($this->steps);
+        $this->bar->start();
 
         // In case of a re-installation, delete all the .env deployer data.
         $this->bulkInfo(2, 'Cleaning old .env deployer keys (if they exist)...', 1);
         $this->unsetEnvData();
-        $bar->advance();
+        $this->bar->advance();
 
         if (! is_dir(base_path('vendor/laravel/passport'))) {
             $this->installLaravelPassport();
         }
 
         $this->publishDeployerResources();
-        $bar->advance();
+        $this->bar->advance();
 
         $this->installClientCredentialsGrant();
         $this->getClientCredentialsGrant();
-        $bar->advance();
+        $this->bar->advance();
 
         $this->registerEnvKeys();
-        $bar->advance();
+        $this->bar->advance();
 
         $this->clearConfigurationCache();
-        $bar->finish();
+        $this->bar->finish();
 
         $this->showLocalInstallInformation();
     }
@@ -103,15 +103,29 @@ class InstallRemoteCommand extends DeployerInstallerBootstrap
 
     protected function installLaravelPassport()
     {
-        $this->bulkInfo(1, 'Installing Laravel Passport package via Composer...', 1);
+        $this->bulkInfo(2, 'Installing Laravel Passport package via Composer...', 1);
+        $this->bar->advance();
+        $this->bulkInfo(2);
         $this->runProcess('composer require laravel/passport');
+
         $this->bulkInfo(1, 'Publishing Laravel Passport resources', 1);
+        $this->bar->advance();
+        $this->bulkInfo(2);
         $this->runProcess('php artisan vendor:publish --provider="Laravel\Passport\PassportServiceProvider"');
+
         $this->bulkInfo(1, 'Running migrations...', 1);
+        $this->bar->advance();
+        $this->bulkInfo(2);
         $this->runProcess('php artisan migrate');
+
         $this->bulkInfo(1, 'Installing Laravel Passport...', 1);
+        $this->bar->advance();
+        $this->bulkInfo(2);
         $this->runProcess('php artisan passport:install');
+
         $this->bulkInfo(1, 'Refreshing autoload...', 1);
+        $this->bar->advance();
+        $this->bulkInfo(2);
         $this->runProcess('composer dumpautoload');
     }
 }
