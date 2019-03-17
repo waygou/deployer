@@ -2,11 +2,9 @@
 
 namespace Waygou\Deployer\Support;
 
-use GuzzleHttp\Exception\RequestException;
-use Waygou\Deployer\Support\ResponsePayload;
-use Zttp\ConnectionException;
 use Zttp\Zttp;
-use Zttp\ZttpResponse;
+use Zttp\ConnectionException;
+use GuzzleHttp\Exception\RequestException;
 
 class ReSTCaller
 {

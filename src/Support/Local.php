@@ -7,8 +7,6 @@ use Illuminate\Support\Facades\File;
 use Illuminate\Filesystem\Filesystem;
 use Waygou\Deployer\Exceptions\LocalException;
 use Waygou\Deployer\Exceptions\ResponseException;
-use Waygou\Deployer\Support\ReSTCaller;
-use Waygou\Deployer\Support\ResponsePayload;
 
 class Local
 {
