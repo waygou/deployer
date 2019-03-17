@@ -52,17 +52,7 @@ function response_payload($result, $payload = [])
     ]);
 }
 
-function deployer_storage_path($path)
+function deployer_storage_path($path = null)
 {
     return app('config')->get('deployer.storage.path')."/{$path}";
-}
-
-function set_env(string $key, string $value)
-{
-    $env = new DotenvEditor;
-    $env->load(base_path('.env'));
-    //$env->unset($key);
-    $env->set($key, $value);
-    $env->save();
-    unset($env);
 }

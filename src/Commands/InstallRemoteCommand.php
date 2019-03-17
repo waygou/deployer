@@ -15,7 +15,7 @@ class InstallRemoteCommand extends DeployerInstallerBootstrap
 
     protected $signature = 'deployer:install-remote';
 
-    protected $description = 'Installs Deployer on your remote Environment';
+    protected $description = 'Installs Deployer on your remote environment';
 
     public function __construct()
     {

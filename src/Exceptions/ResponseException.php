@@ -29,7 +29,7 @@ class ResponseException extends Exception
         }
 
         if (isset($response->payload)) {
-            $this->message = data_get($response->payload->json, 'message') ??
+            $this->message = data_get($response->payload->json, 'payload.message') ??
                              data_get($response->payload->json, 'exception');
         }
 

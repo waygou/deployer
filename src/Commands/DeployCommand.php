@@ -22,7 +22,7 @@ final class DeployCommand extends DeployerInstallerBootstrap
      *
      * @var string
      */
-    protected $description = 'Deploys your codebase content to a remote server, hopefully in a flash :)';
+    protected $description = 'Deploys your codebase content to your remote environment';
 
     /**
      * Create a new command instance.
@@ -45,7 +45,6 @@ final class DeployCommand extends DeployerInstallerBootstrap
 
         $this->steps = 10;
 
-        $this->bulkInfo(2, 'Starting deployment...', 1);
         $bar = $this->output->createProgressBar($this->steps);
         $bar->start();
 
@@ -61,15 +60,12 @@ final class DeployCommand extends DeployerInstallerBootstrap
         $this->createZip();
         $bar->advance();
 
-        $this->uploadZip();
-        $bar->advance();
-
-        dd('-- on the zip --');
-
-        $this->bulkInfo(2, '*** Package Upload ***', 1);
+        $this->bulkInfo(2, 'Uploading package to remote environment...', 1);
         Local::getAccessToken()
-             ->upload();
+             ->uploadCodebase($this->transaction);
         $bar->advance();
+
+        dd('-- *** --');
 
         $this->bulkInfo(2, '*** Package Upload consistency check ***', 1);
         Local::getAccessToken()
@@ -105,7 +101,7 @@ final class DeployCommand extends DeployerInstallerBootstrap
 
         rescue(function () {
             Local::getAccessToken()
-                 ->uploadCodebase(deployer_storage_path($this->zipFilename));
+                 ->uploadCodebase($this->transaction);
         }, function () {
             $this->gracefullyExit();
         });
@@ -113,10 +109,13 @@ final class DeployCommand extends DeployerInstallerBootstrap
 
     protected function createZip()
     {
-        $this->bulkInfo(2, '*** Local codebase package creation (Zip) ***', 1);
+        $this->bulkInfo(2, 'Creating your codebase file package...', 1);
+
+        // Also the zip filename.
+        $this->transaction = date('Ymd-His');
 
         rescue(function () {
-            $this->zipFilename = Local::CreateCodebaseZip();
+            Local::CreateCodebaseZip($this->transaction);
         }, function () {
             $this->gracefullyExit();
         });
@@ -124,7 +123,7 @@ final class DeployCommand extends DeployerInstallerBootstrap
 
     protected function askRemoteForPreChecks()
     {
-        $this->bulkInfo(2, '*** Remote server pre-deployment checks ***', 1);
+        $this->bulkInfo(2, 'Asking remote server to make its pre-checks...', 1);
 
         rescue(function () {
             Local::getAccessToken()
@@ -136,7 +135,7 @@ final class DeployCommand extends DeployerInstallerBootstrap
 
     protected function pingRemote()
     {
-        $this->bulkInfo(2, '*** OAuth & Remote Server connectivity test ***', 1);
+        $this->bulkInfo(2, 'Checking OAuth & remote environment connectivity...', 1);
 
         rescue(function () {
             Local::getAccessToken()
@@ -148,7 +147,7 @@ final class DeployCommand extends DeployerInstallerBootstrap
 
     protected function runPreChecks()
     {
-        $this->bulkInfo(2, '*** Local environment pre-deployment checks ***', 1);
+        $this->bulkInfo(2, 'Checking local environment storage availability...', 1);
         rescue(function () {
             Local::preChecks();
         }, function () {

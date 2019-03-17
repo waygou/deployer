@@ -19,7 +19,7 @@ class InstallLocalCommand extends DeployerInstallerBootstrap
                             {--secret= : Your OAuth Secret}
                             {--token= : The Remote server token, must be the same}';
 
-    protected $description = 'Installs Deployer in your local development environment.';
+    protected $description = 'Installs Deployer in your local environment';
 
     public function handle()
     {

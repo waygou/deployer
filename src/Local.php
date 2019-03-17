@@ -25,17 +25,14 @@ class LocalOperation
      * Creates a zip file with the respective codebase configuration resources.
      * @return string The zip filename.
      */
-    public function CreateCodebaseZip()
+    public function CreateCodebaseZip(string $transaction)
     {
-        $this->filename = uniqid().'.zip';
-        $storagePath = app('config')->get('deployer.storage.path');
-
-        // Testing purposes.
+        // **************** Testing purposes *************
         $file = new Filesystem;
-        $file->cleanDirectory($storagePath);
-        // ***
+        $file->cleanDirectory(deployer_storage_path());
+        // ***********************************************
 
-        $zip = Zipper::make("{$storagePath}/{$this->filename}");
+        $zip = Zipper::make(deployer_storage_path("{$transaction}.zip"));
 
         /*
          * Add the codebase files and folders.
@@ -53,31 +50,27 @@ class LocalOperation
         });
 
         $zip->close();
-
-        return $this->filename;
     }
 
-    /**
-     * Uploads the codebase content to the server, as a zip.
-     * The file is hashed using base64 encoding.
-     * @param  string $filepath Path to the file.
-     * @return [type]           [description]
-     */
-    public function uploadCodebase(string $filepath)
+    public function uploadCodebase(string $transaction)
     {
         $response = RESTCaller::asPost()
                               ->withHeader('Authorization', 'Bearer '.$this->accessToken->token)
                               ->withHeader('Accept', 'application/json')
                               ->withPayload(['deployer-token' => app('config')->get('deployer.token')])
-                              ->withPayload(['codebase' => base64_encode(file_get_contents($filepath))])
+                              ->withPayload(['transaction' => $transaction])
+                              ->withPayload(['runbook' => json_encode(app('config')->get('deployer.scripts'))])
+                              ->withPayload(['codebase' => base64_encode(file_get_contents(deployer_storage_path("{$transaction}.zip")))])
                               ->call(deployer_remote_url('upload'));
 
         $this->checkResponseAcknowledgement($response);
     }
 
     /**
-     * The pre-checks actions correspond to:
-     * - Verify if the backup directory inside app/deployer storage is writeable.
+     * The local environment pre-checklist actions correspond to:
+     * - Attempt to create the deployer storage folder in case it doesn't exist.
+     * - Verify if the storage directory is writeable.
+     *
      * @return void
      */
     public function preChecks()
@@ -87,10 +80,9 @@ class LocalOperation
             mkdir($storagePath, 0755, true);
         }
 
-        return is_writable($storagePath) ?
-            true : function () {
-                throw new LocalException('Local storage directory not writeable');
-            };
+        if (!is_writable($storagePath)) {
+            throw new LocalException('Local storage directory not writeable');
+        }
     }
 
     /**
