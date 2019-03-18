@@ -15,9 +15,6 @@ class ResponseException extends Exception
 
     public function __construct(ResponsePayload $response)
     {
-
-        dd('I am here', $response);
-
         $this->response = $response;
         $this->message = 'Unknown ResponsePayload exception. Sorry about that.';
 
@@ -33,7 +30,7 @@ class ResponseException extends Exception
         }
 
         if (isset($response->payload)) {
-            $this->message = data_get($response->payload->json, 'payload.message') ??
+            $this->message = data_get($response->payload->json, 'message') ??
                              data_get($response->payload->json, 'exception');
         }
 

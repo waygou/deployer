@@ -2,9 +2,9 @@
 
 namespace Waygou\Deployer\Http\Controllers;
 
-use App\Http\Controllers\Controller;
+use Waygou\Deployer\Abstracts\RemoteBaseController;
 
-class PingController extends Controller
+class PingController extends RemoteBaseController
 {
     public function __invoke()
     {
