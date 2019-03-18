@@ -3,9 +3,9 @@
 namespace Waygou\Deployer\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Waygou\Deployer\Support\Remote;
 use Illuminate\Support\Facades\Validator;
 use Waygou\Deployer\Abstracts\RemoteBaseController;
-use Waygou\Deployer\Support\Remote;
 
 class UploadController extends RemoteBaseController
 {
@@ -21,7 +21,7 @@ class UploadController extends RemoteBaseController
             return response_payload(false, ['message'=> $validator->errors()->first()], 201);
         }
 
-        /**
+        /*
          * The codebase repository is a folder that is created with the transaction name.
          *
          */
