@@ -3,10 +3,10 @@
 namespace Waygou\Deployer\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
-use Waygou\Deployer\Abstracts\RemoteBaseController;
-use Waygou\Deployer\Support\CodebaseRepository;
 use Waygou\Deployer\Support\Remote;
+use Illuminate\Support\Facades\Validator;
+use Waygou\Deployer\Support\CodebaseRepository;
+use Waygou\Deployer\Abstracts\RemoteBaseController;
 
 class UploadController extends RemoteBaseController
 {
