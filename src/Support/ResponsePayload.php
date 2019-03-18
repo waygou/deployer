@@ -9,6 +9,7 @@ class ResponsePayload
     public $isOk = false;
     public $instance = null;
     public $exception = null;
+    public $payload = null;
 
     public function __construct(ZttpResponse $response = null, ?\Exception $exception)
     {
