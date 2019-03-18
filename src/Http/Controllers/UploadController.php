@@ -21,12 +21,13 @@ class UploadController extends RemoteBaseController
             return response_payload(false, ['message'=> $validator->errors()->first()], 201);
         }
 
-        /**
-         * The codebase repository is a folder that is created with the transaction name.
-         *
-         */
+        $repository = new CodebaseRepository(
+            $transaction,
+            $runbook,
+            base64_decode($codebase)
+        );
 
-        Remote::storeCodebaseRepository();
+        Remote::storeCodebaseRepository($repository);
 
         return response_payload(true);
     }

@@ -2,7 +2,10 @@
 
 namespace Waygou\Deployer\Support;
 
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Waygou\Deployer\Exceptions\RemoteException;
+use Waygou\Deployer\Support\CodebaseRepository;
 
 class Remote
 {
@@ -37,14 +40,8 @@ class RemoteOperation
             };
     }
 
-    /**
-     * Saves a codebase package into the deployer storage folder.
-     * For each new codebase upload, if.
-     * @param  string $codebase Codebase package, base64 encoded.
-     * @return void
-     */
-    public function saveCodebase($codebase)
+    public function storeCodebaseRepository(CodebaseRepository $repository)
     {
-        $stream = base64_decode($codebase);
+        Storage::disk('deployer')->makeDirectory($repository->transaction());
     }
 }
