@@ -3,9 +3,10 @@
 namespace Waygou\Deployer\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Waygou\Deployer\Support\Remote;
 use Illuminate\Support\Facades\Validator;
 use Waygou\Deployer\Abstracts\RemoteBaseController;
+use Waygou\Deployer\Support\CodebaseRepository;
+use Waygou\Deployer\Support\Remote;
 
 class UploadController extends RemoteBaseController
 {
@@ -22,12 +23,12 @@ class UploadController extends RemoteBaseController
         }
 
         $repository = new CodebaseRepository(
-            $transaction,
-            $runbook,
-            base64_decode($codebase)
+            $request->input('transaction'),
+            $request->input('runbook'),
+            base64_decode($request->input('codebase'))
         );
 
-        Remote::storeCodebaseRepository($repository);
+        Remote::storeRepository($repository);
 
         return response_payload(true);
     }

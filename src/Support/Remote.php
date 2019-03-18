@@ -40,8 +40,13 @@ class RemoteOperation
             };
     }
 
-    public function storeCodebaseRepository(CodebaseRepository $repository)
+    public function storeRepository(CodebaseRepository $repository)
     {
+        // Create a new transaction folder inside the deployer storage.
         Storage::disk('deployer')->makeDirectory($repository->transaction());
+
+        // Add the runbook, and the zip codebase file.
+        Storage::disk('deployer')->put("{$repository->transaction()}/codebase.zip", $repository->codebaseStream());
+        Storage::disk('deployer')->put("{$repository->transaction()}/runbook.json", $repository->runbook());
     }
 }

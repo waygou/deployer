@@ -17,4 +17,14 @@ class CodebaseRepository
     {
         return $this->transaction;
     }
+
+    public function codebaseStream()
+    {
+        return $this->codebase;
+    }
+
+    public function runbook()
+    {
+        return $this->runbook;
+    }
 }
