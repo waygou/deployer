@@ -2,10 +2,8 @@
 
 namespace Waygou\Deployer\Support;
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Waygou\Deployer\Exceptions\RemoteException;
-use Waygou\Deployer\Support\CodebaseRepository;
 
 class Remote
 {
