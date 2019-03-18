@@ -2,12 +2,12 @@
 
 namespace Waygou\Deployer\Abstracts;
 
-use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\Controller;
 
 abstract class RemoteBaseController extends Controller
 {
-    function __destruct()
+    public function __destruct()
     {
         // Disable any active token for the deployer client.
         DB::table('oauth_access_tokens')
