@@ -2,6 +2,8 @@
 
 namespace Waygou\Deployer\Support;
 
+use Zttp\ZttpResponse;
+
 class ResponsePayload
 {
     public $isOk = false;
