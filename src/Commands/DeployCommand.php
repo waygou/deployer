@@ -101,7 +101,6 @@ final class DeployCommand extends DeployerInstallerBootstrap
 
         dd(' merci ');
 
-
         rescue(function () {
             Local::getAccessToken()
                  ->uploadCodebase($this->transaction);
