@@ -58,5 +58,5 @@ function deployer_storage_path($path = null)
 
 function generate_transaction_code()
 {
-    return date('Ymd-His') . '-' . strtoupper(str_random(5));
+    return date('Ymd-His').'-'.strtoupper(str_random(5));
 }

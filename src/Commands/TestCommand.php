@@ -2,12 +2,10 @@
 
 namespace Waygou\Deployer\Commands;
 
-use Illuminate\Support\Facades\Storage;
-use Waygou\Deployer\Abstracts\DeployerInstallerBootstrap;
-use Waygou\Deployer\Concerns\CanRunProcesses;
-use Waygou\Deployer\Concerns\SimplifiesConsoleOutput;
-use Waygou\Deployer\Support\Local;
 use Waygou\Deployer\Support\TestClass;
+use Illuminate\Support\Facades\Storage;
+use Waygou\Deployer\Concerns\CanRunProcesses;
+use Waygou\Deployer\Abstracts\DeployerInstallerBootstrap;
 
 final class TestCommand extends DeployerInstallerBootstrap
 {
@@ -56,21 +54,18 @@ final class TestCommand extends DeployerInstallerBootstrap
         // Invokable class.
         if (class_exists($mixed)) {
             $result = (new $mixed)();
-        };
+        }
 
         // Custom method.
         if (strpos($mixed, '@')) {
             $result = app()->call($mixed);
             dd($result);
-        };
+        }
 
         // Artisan command
         // ...
 
-
-
         dd(class_exists($mixed));
-
 
         if (class_exists($mixed)) {
             /*
@@ -79,12 +74,7 @@ final class TestCommand extends DeployerInstallerBootstrap
             */
         }
 
-
         //dd(run_custom_script($mixed));
-
-
-
-
 
         /*
         if (Storage::disk('deployer')->exists('20190321-013043-TBUOU/runbook.json')) {
