@@ -2,6 +2,7 @@
 
 namespace Waygou\Deployer\Support;
 
+use Chumper\Zipper\Facades\Zipper;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Storage;
 use Waygou\Deployer\Concerns\CanRunProcesses;
@@ -25,6 +26,13 @@ class RemoteOperation
     public static function new(...$args)
     {
         return new self(...$args);
+    }
+
+    public function unzipCodebase(string $transaction)
+    {
+        if (Storage::disk('deployer')->exists("{$transaction}/codebase.zip")) {
+            Zipper::make(deployer_storage_path("{$transaction}/codebase.zip"))->extractTo(base_path());
+        }
     }
 
     private function runScripts(string $type, string $transaction)
@@ -68,7 +76,7 @@ class RemoteOperation
 
     public function storeRepository(CodebaseRepository $repository)
     {
-        // rescue() used than try-catch statement just to use the exception->report() from Laravel!
+        // rescue() used than try-catch statement just to use the exception->report() from Laravel.
         // https://laravel.com/docs/5.8/helpers#method-rescue
         rescue(function () use ($repository) {
             // Create a new transaction folder inside the deployer storage.

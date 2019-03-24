@@ -80,7 +80,7 @@ final class DeployCommand extends DeployerInstallerBootstrap
 
     protected function createLocalRepository()
     {
-        $this->bulkInfo(2, 'Creating local environment repository (runbook and codebase zip)...', 1);
+        $this->bulkInfo(2, "Creating local environment deployment repository ({$this->transaction})...", 1);
 
         rescue(function () {
             Local::createRepository($this->transaction);
