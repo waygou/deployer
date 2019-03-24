@@ -3,8 +3,9 @@
 namespace Waygou\Deployer\Support;
 
 use Chumper\Zipper\Facades\Zipper;
-use Illuminate\Support\Facades\File;
 use Illuminate\Filesystem\Filesystem;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Storage;
 use Waygou\Deployer\Exceptions\LocalException;
 use Waygou\Deployer\Exceptions\ResponseException;
 
@@ -21,18 +22,74 @@ class LocalOperation
     private $accessToken;
     protected $zipFilename;
 
+    public function createRepository(string $transaction)
+    {
+        // rescue() used insted of try-catch statement just to use the exception->report() from Laravel!
+        // https://laravel.com/docs/5.8/helpers#method-rescue
+        rescue(function () use ($transaction) {
+            // Create a new transaction folder inside the deployer storage.
+            Storage::disk('deployer')->makeDirectory($transaction);
+
+            // Create zip, and store it inside the transaction folder.
+            $this->CreateCodebaseZip(deployer_storage_path("{$transaction}/codebase.zip"));
+
+            // Store the runbook, and the zip codebase file.
+            Storage::disk('deployer')->put(
+                "{$transaction}/runbook.json",
+                json_encode(app('config')->get('deployer.scripts'))
+            );
+        }, function () {
+            throw new LocalException('An error occured whle trying to store your codebase in your local environment');
+        });
+    }
+
+    public function runPostScripts(string $transaction)
+    {
+
+        $response = ReSTCaller::asPost()
+                              ->withHeader('Authorization', 'Bearer '.$this->accessToken->token)
+                              ->withHeader('Accept', 'application/json')
+                              ->withPayload(['deployer-token' => app('config')->get('deployer.token')])
+                              ->withPayload(['transaction' => $transaction])
+                              ->call(deployer_remote_url('post-scripts'));
+
+        $this->checkResponseAcknowledgement($response);
+    }
+
+    public function deploy(string $transaction)
+    {
+
+        $response = ReSTCaller::asPost()
+                              ->withHeader('Authorization', 'Bearer '.$this->accessToken->token)
+                              ->withHeader('Accept', 'application/json')
+                              ->withPayload(['deployer-token' => app('config')->get('deployer.token')])
+                              ->withPayload(['transaction' => $transaction])
+                              ->call(deployer_remote_url('deploy'));
+
+        $this->checkResponseAcknowledgement($response);
+    }
+
+    public function runPreScripts(string $transaction)
+    {
+
+        $response = ReSTCaller::asPost()
+                              ->withHeader('Authorization', 'Bearer '.$this->accessToken->token)
+                              ->withHeader('Accept', 'application/json')
+                              ->withPayload(['deployer-token' => app('config')->get('deployer.token')])
+                              ->withPayload(['transaction' => $transaction])
+                              ->call(deployer_remote_url('pre-scripts'));
+
+        $this->checkResponseAcknowledgement($response);
+    }
+
     /**
      * Creates a zip file with the respective codebase configuration resources.
-     * @return string The zip filename.
+     *
+     * @return void
      */
-    public function CreateCodebaseZip(string $transaction)
+    public function CreateCodebaseZip(string $fqfilename)
     {
-        // **************** Testing purposes *************
-        $file = new Filesystem;
-        $file->cleanDirectory(deployer_storage_path());
-        // ***********************************************
-
-        $zip = Zipper::make(deployer_storage_path("{$transaction}.zip"));
+        $zip = Zipper::make($fqfilename);
 
         /*
          * Add the codebase files and folders.
@@ -60,7 +117,7 @@ class LocalOperation
                               ->withPayload(['deployer-token' => app('config')->get('deployer.token')])
                               ->withPayload(['transaction' => $transaction])
                               ->withPayload(['runbook' => json_encode(app('config')->get('deployer.scripts'))])
-                              ->withPayload(['codebase' => base64_encode(file_get_contents(deployer_storage_path("{$transaction}.zip")))])
+                              ->withPayload(['codebase' => base64_encode(file_get_contents(deployer_storage_path("{$transaction}/codebase.zip")))])
                               ->call(deployer_remote_url('upload'));
 
         $this->checkResponseAcknowledgement($response);

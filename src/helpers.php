@@ -55,3 +55,8 @@ function deployer_storage_path($path = null)
 {
     return app('config')->get('deployer.storage.path')."/{$path}";
 }
+
+function generate_transaction_code()
+{
+    return date('Ymd-His') . '-' . strtoupper(str_random(5));
+}

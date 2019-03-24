@@ -2,9 +2,10 @@
 
 namespace Waygou\Deployer\Commands;
 
-use Waygou\Deployer\Support\Local;
-use Waygou\Deployer\Concerns\SimplifiesConsoleOutput;
 use Waygou\Deployer\Abstracts\DeployerInstallerBootstrap;
+use Waygou\Deployer\Concerns\SimplifiesConsoleOutput;
+use Waygou\Deployer\Support\CodebaseRepository;
+use Waygou\Deployer\Support\Local;
 
 final class DeployCommand extends DeployerInstallerBootstrap
 {
@@ -43,7 +44,7 @@ final class DeployCommand extends DeployerInstallerBootstrap
     {
         parent::handle();
 
-        $this->steps = 10;
+        $this->steps = 8;
 
         $bar = $this->output->createProgressBar($this->steps);
         $bar->start();
@@ -57,67 +58,81 @@ final class DeployCommand extends DeployerInstallerBootstrap
         $this->askRemoteForPreChecks();
         $bar->advance();
 
-        $this->createZip();
+        // The repository code generated in this moment is the PK for all the next transactions.
+        $this->transaction = generate_transaction_code();
+
+        $this->createLocalRepository();
         $bar->advance();
 
         $this->uploadCodebase();
-
-        dd('-- *** --');
-
-        $this->bulkInfo(2, '*** Package Upload consistency check ***', 1);
-        Local::getAccessToken()
-             ->askRemoteForConsistencyCheck();
         $bar->advance();
 
-        $this->bulkInfo(2, '*** Remote Server codebase backup ***', 1);
-        Local::getAccessToken()
-             ->askRemoteForBackup();
+        $this->runPreScripts();
         $bar->advance();
 
-        $this->bulkInfo(2, '*** Remote Server pre-commands run (if any) ***', 1);
-        Local::getAccessToken()
-             ->askRemoteToRunPreCommands();
+        $this->deploy();
         $bar->advance();
 
-        $this->bulkInfo(2, '*** Remote Server codebase package deployment ***', 1);
-        Local::getAccessToken()
-             ->askRemoteForCodebaseDeployment();
-        $bar->advance();
-
-        $this->bulkInfo(2, '*** Remote Server post-commands run (if any) ***', 1);
-        Local::getAccessToken()
-             ->askRemoteToRunPostCommands();
+        $this->runPostScripts();
         $bar->finish();
 
-        $this->bulkInfo(2, '*** All good! ***', 1);
+        $this->bulkInfo(2, '*** All good! Package deployed! ***', 1);
+    }
+
+    protected function createLocalRepository()
+    {
+        $this->bulkInfo(2, 'Creating local environment repository (runbook and codebase zip)...', 1);
+
+        rescue(function () {
+            Local::createRepository($this->transaction);
+        }, function () {
+            $this->gracefullyExit();
+        });
+    }
+
+    protected function runPostScripts()
+    {
+        $this->bulkInfo(2, 'Running your post-scripts after unpacking your codebase (if they exist)...', 1);
+
+        rescue(function () {
+            Local::getAccessToken()
+                 ->runPostScripts($this->transaction);
+        }, function () {
+            $this->gracefullyExit();
+        });
+    }
+
+    protected function deploy()
+    {
+        $this->bulkInfo(2, 'Unpacking your codebase on your remote server...', 1);
+
+        rescue(function () {
+            Local::getAccessToken()
+                 ->deploy($this->transaction);
+        }, function () {
+            $this->gracefullyExit();
+        });
+    }
+
+    protected function runPreScripts()
+    {
+        $this->bulkInfo(2, 'Running your pre-scripts after unpacking your codebase (if they exist)...', 1);
+
+        rescue(function () {
+            Local::getAccessToken()
+                 ->runPreScripts($this->transaction);
+        }, function () {
+            $this->gracefullyExit();
+        });
     }
 
     protected function uploadCodebase()
     {
         $this->bulkInfo(2, 'Uploading package to remote environment...', 1);
 
-        Local::getAccessToken()
-             ->uploadCodebase($this->transaction);
-
-        dd(' merci ');
-
         rescue(function () {
             Local::getAccessToken()
                  ->uploadCodebase($this->transaction);
-        }, function () {
-            $this->gracefullyExit();
-        });
-    }
-
-    protected function createZip()
-    {
-        $this->bulkInfo(2, 'Creating your codebase file package...', 1);
-
-        // Also the zip filename.
-        $this->transaction = date('Ymd-His');
-
-        rescue(function () {
-            Local::CreateCodebaseZip($this->transaction);
         }, function () {
             $this->gracefullyExit();
         });

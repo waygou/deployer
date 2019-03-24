@@ -2,22 +2,33 @@
 
 namespace Waygou\Deployer\Concerns;
 
+use Symfony\Component\Process\Exception\RuntimeException;
 use Symfony\Component\Process\Process;
 
 trait CanRunProcesses
 {
+    /**
+     * Executes a process.
+     *
+     * @param  string $command
+     * @param  string $path
+     * @return void|string
+     *
+     * @throws Symfony\Component\Process\Exception\RuntimeException
+     */
     protected function runProcess($command, $path = null)
     {
+
         $path = $path ?? getcwd();
 
         $process = (new Process($command, $path))->setTimeout(null);
 
-        if ('\\' !== DIRECTORY_SEPARATOR && file_exists('/dev/tty') && is_readable('/dev/tty')) {
-            $process->setTty(true);
+        $process->run();
+
+        if (!$process->isSuccessful()) {
+            throw new RuntimeException($process->getErrorOutput());
         }
 
-        $process->run(function ($type, $line) {
-            $this->output->write($line);
-        });
+        return $process->getOutput();
     }
 }

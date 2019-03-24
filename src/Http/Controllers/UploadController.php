@@ -12,6 +12,7 @@ class UploadController extends RemoteBaseController
 {
     public function __invoke(Request $request)
     {
+
         $validator = Validator::make($request->all(), [
             'codebase'    => 'required',
             'transaction' => 'required',
@@ -22,11 +23,10 @@ class UploadController extends RemoteBaseController
             return response_payload(false, ['message'=> $validator->errors()->first()], 201);
         }
 
-        $repository = new CodebaseRepository(
-            $request->input('transaction'),
-            $request->input('runbook'),
-            base64_decode($request->input('codebase'))
-        );
+        $repository = (new CodebaseRepository())
+                          ->withCodebaseStream(base64_decode($request->input('codebase')))
+                          ->withRunbook($request->input('runbook'))
+                          ->withTransaction($request->input('transaction'));
 
         Remote::storeRepository($repository);
 

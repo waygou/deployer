@@ -2,29 +2,47 @@
 
 namespace Waygou\Deployer\Support;
 
+use Waygou\Deployer\Exceptions\CodebaseRepositoryException;
+
 class CodebaseRepository
 {
-    private $transaction;
-    private $codebase;
     private $runbook;
+    private $codebaseStream;
+    private $transaction;
 
-    public function __construct(string $transaction, string $runbook, string $codebase)
+    public function withCodebaseStream(string $codebaseStream)
     {
-        list($this->transaction, $this->runbook, $this->codebase) = [$transaction, $runbook, $codebase];
+        $this->codebaseStream = $codebaseStream;
+
+        return $this;
     }
 
-    public function transaction()
+    public function withTransaction(string $transaction)
     {
-        return $this->transaction;
+        $this->transaction = $transaction;
+
+        return $this;
+    }
+
+    public function withRunbook(string $runbook)
+    {
+        $this->runbook = $runbook;
+
+        return $this;
     }
 
     public function codebaseStream()
     {
-        return $this->codebase;
+        return $this->codebaseStream;
     }
 
     public function runbook()
     {
         return $this->runbook;
+    }
+
+    public function transaction()
+    {
+        return $this->transaction;
     }
 }
