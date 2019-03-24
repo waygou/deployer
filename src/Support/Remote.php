@@ -61,10 +61,9 @@ class RemoteOperation
             mkdir($storagePath, 0755, true);
         }
 
-        return is_writable($storagePath) ?
-            true : function () {
-                throw new RemoteException('Local storage directory not writeable');
-            };
+        if (!is_writable($storagePath)) {
+            throw new RemoteException('Local storage directory not writeable');
+        }
     }
 
     public function storeRepository(CodebaseRepository $repository)
