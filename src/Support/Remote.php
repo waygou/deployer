@@ -61,7 +61,7 @@ class RemoteOperation
             mkdir($storagePath, 0755, true);
         }
 
-        if (!is_writable($storagePath)) {
+        if (! is_writable($storagePath)) {
             throw new RemoteException('Local storage directory not writeable');
         }
     }
