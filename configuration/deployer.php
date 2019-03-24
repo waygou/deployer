@@ -20,16 +20,19 @@ return [
     /*
      * What scripts/processes do you want to run before and after your
      * deployment was completed?
-     * You can use a full string E.g.: 'php artisan route:list'
-     * You can use an invokable Class that should return a string to run.
      */
     'scripts' => [
         'before_deployment' => [
-            'php artisan route:list',
-            //InvokableClass::script
+            'route:list', // This is considered an Artisan command.
+            'view:clear',
+            /**
+             * You can also use the following options:
+             * YourInvokableClass::class - Will run the __invoke() magic method.
+             * 'YourClass @ method' - Will run your class and the respective method on it.
+             */
         ],
         'after_deployment' => [
-            'php artisan route:list',
+            'route:list',
         ],
     ],
 
