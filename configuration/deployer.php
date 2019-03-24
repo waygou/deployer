@@ -25,7 +25,7 @@ return [
         'before_deployment' => [
             'route:list', // This is considered an Artisan command.
             'view:clear',
-            /**
+            /*
              * You can also use the following options:
              * YourInvokableClass::class - Will run the __invoke() magic method.
              * 'YourClass @ method' - Will run your class and the respective method on it.
