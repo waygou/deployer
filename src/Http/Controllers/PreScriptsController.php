@@ -3,10 +3,9 @@
 namespace Waygou\Deployer\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Waygou\Deployer\Support\Remote;
 use Illuminate\Support\Facades\Validator;
 use Waygou\Deployer\Abstracts\RemoteBaseController;
-use Waygou\Deployer\Support\CodebaseRepository;
-use Waygou\Deployer\Support\Remote;
 
 class PreScriptsController extends RemoteBaseController
 {

@@ -6,7 +6,6 @@ use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Storage;
 use Waygou\Deployer\Concerns\CanRunProcesses;
 use Waygou\Deployer\Exceptions\RemoteException;
-use Waygou\Deployer\Support\CodebaseRepository;
 
 class Remote
 {
@@ -31,12 +30,11 @@ class RemoteOperation
             $resource = json_decode(Storage::disk('deployer')->get("{$transaction}/runbook.json"));
 
             collect(data_get($resource, 'after_deployment'))->each(function ($item) use ($transaction) {
-
                 $output = $this->runScript($item);
 
                 if ($output !== null) {
                     Storage::disk('deployer')->append("{$transaction}/output_after.json", "Command: {$item}");
-                    Storage::disk('deployer')->append("{$transaction}/output_after", "Output:");
+                    Storage::disk('deployer')->append("{$transaction}/output_after", 'Output:');
                     Storage::disk('deployer')->append("{$transaction}/output_after", "{$output}");
                 }
             });
@@ -49,12 +47,11 @@ class RemoteOperation
             $resource = json_decode(Storage::disk('deployer')->get("{$transaction}/runbook.json"));
 
             collect(data_get($resource, 'before_deployment'))->each(function ($item) use ($transaction) {
-
                 $output = $this->runScript($item);
 
                 if ($output !== null) {
                     Storage::disk('deployer')->append("{$transaction}/output_before.json", "Command: {$item}");
-                    Storage::disk('deployer')->append("{$transaction}/output_before.json", "Output:");
+                    Storage::disk('deployer')->append("{$transaction}/output_before.json", 'Output:');
                     Storage::disk('deployer')->append("{$transaction}/output_before.json", "{$output}");
                 }
             });
@@ -95,18 +92,19 @@ class RemoteOperation
         // Invokable class.
         if (class_exists($mixed)) {
             return (new $mixed)();
-        };
+        }
 
         // Custom method.
         if (strpos($mixed, '@')) {
             return app()->call($mixed);
-        };
+        }
 
         // Artisan command.
         $error = Artisan::call($mixed);
         if ($error != 0) {
-            throw new RemoteException('There was an error on your Artisan command (pre-script):' . Artisan::output());
+            throw new RemoteException('There was an error on your Artisan command (pre-script):'.Artisan::output());
         }
+
         return Artisan::output();
     }
 }

@@ -12,7 +12,6 @@ class UploadController extends RemoteBaseController
 {
     public function __invoke(Request $request)
     {
-
         $validator = Validator::make($request->all(), [
             'codebase'    => 'required',
             'transaction' => 'required',

@@ -2,8 +2,6 @@
 
 namespace Waygou\Deployer\Support;
 
-use Waygou\Deployer\Exceptions\CodebaseRepositoryException;
-
 class CodebaseRepository
 {
     private $runbook;

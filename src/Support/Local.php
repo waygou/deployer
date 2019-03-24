@@ -3,7 +3,6 @@
 namespace Waygou\Deployer\Support;
 
 use Chumper\Zipper\Facades\Zipper;
-use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
 use Waygou\Deployer\Exceptions\LocalException;
@@ -45,7 +44,6 @@ class LocalOperation
 
     public function runPostScripts(string $transaction)
     {
-
         $response = ReSTCaller::asPost()
                               ->withHeader('Authorization', 'Bearer '.$this->accessToken->token)
                               ->withHeader('Accept', 'application/json')
@@ -58,7 +56,6 @@ class LocalOperation
 
     public function deploy(string $transaction)
     {
-
         $response = ReSTCaller::asPost()
                               ->withHeader('Authorization', 'Bearer '.$this->accessToken->token)
                               ->withHeader('Accept', 'application/json')
@@ -71,7 +68,6 @@ class LocalOperation
 
     public function runPreScripts(string $transaction)
     {
-
         $response = ReSTCaller::asPost()
                               ->withHeader('Authorization', 'Bearer '.$this->accessToken->token)
                               ->withHeader('Accept', 'application/json')
