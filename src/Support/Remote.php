@@ -19,43 +19,39 @@ class RemoteOperation
 {
     use CanRunProcesses;
 
+    const PREDEPLOYMENT = 'before';
+    const POSTDEPLOYMENT = 'after';
+
     public static function new(...$args)
     {
         return new self(...$args);
     }
 
-    public function runPostScripts(string $transaction)
+    private function runScripts(string $type, string $transaction)
     {
         if (Storage::disk('deployer')->exists("{$transaction}/runbook.json")) {
             $resource = json_decode(Storage::disk('deployer')->get("{$transaction}/runbook.json"));
 
-            collect(data_get($resource, 'after_deployment'))->each(function ($item) use ($transaction) {
+            collect(data_get($resource, "{$type}_deployment"))->each(function ($item) use ($transaction, $type) {
                 $output = $this->runScript($item);
 
                 if ($output !== null) {
-                    Storage::disk('deployer')->append("{$transaction}/output_after.json", "Command: {$item}");
-                    Storage::disk('deployer')->append("{$transaction}/output_after", 'Output:');
-                    Storage::disk('deployer')->append("{$transaction}/output_after", "{$output}");
+                    Storage::disk('deployer')->append("{$transaction}/output_{$type}.json", "Command: {$item}");
+                    Storage::disk('deployer')->append("{$transaction}/output_{$type}.json", 'Output:');
+                    Storage::disk('deployer')->append("{$transaction}/output_{$type}.json", "{$output}");
                 }
             });
         }
     }
 
+    public function runPostScripts(string $transaction)
+    {
+        $this->runScripts(self::POSTDEPLOYMENT, $transaction);
+    }
+
     public function runPreScripts(string $transaction)
     {
-        if (Storage::disk('deployer')->exists("{$transaction}/runbook.json")) {
-            $resource = json_decode(Storage::disk('deployer')->get("{$transaction}/runbook.json"));
-
-            collect(data_get($resource, 'before_deployment'))->each(function ($item) use ($transaction) {
-                $output = $this->runScript($item);
-
-                if ($output !== null) {
-                    Storage::disk('deployer')->append("{$transaction}/output_before.json", "Command: {$item}");
-                    Storage::disk('deployer')->append("{$transaction}/output_before.json", 'Output:');
-                    Storage::disk('deployer')->append("{$transaction}/output_before.json", "{$output}");
-                }
-            });
-        }
+        $this->runScripts(self::PREDEPLOYMENT, $transaction);
     }
 
     public function preChecks()
