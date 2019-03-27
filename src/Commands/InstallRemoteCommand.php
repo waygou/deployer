@@ -2,11 +2,11 @@
 
 namespace Waygou\Deployer\Commands;
 
-use Illuminate\Support\Facades\Artisan;
-use Illuminate\Support\Facades\DB;
 use Laravel\Passport\Client;
-use Waygou\Deployer\Abstracts\DeployerInstallerBootstrap;
+use Illuminate\Support\Facades\DB;
 use sixlive\DotenvEditor\DotenvEditor;
+use Illuminate\Support\Facades\Artisan;
+use Waygou\Deployer\Abstracts\DeployerInstallerBootstrap;
 
 class InstallRemoteCommand extends DeployerInstallerBootstrap
 {
@@ -113,7 +113,7 @@ class InstallRemoteCommand extends DeployerInstallerBootstrap
         $this->bar->advance();
         $this->bulkInfo(2);
         Artisan::call('vendor:publish', [
-                'provider' => 'Laravel\Passport\PassportServiceProvider'
+                'provider' => 'Laravel\Passport\PassportServiceProvider',
             ]);
         //$this->runProcess('php artisan vendor:publish --provider="Laravel\Passport\PassportServiceProvider"');
 
@@ -128,7 +128,7 @@ class InstallRemoteCommand extends DeployerInstallerBootstrap
         $this->bar->advance();
         $this->bulkInfo(2);
         Artisan::call('passport:install', [
-                'provider' => 'Laravel\Passport\PassportServiceProvider'
+                'provider' => 'Laravel\Passport\PassportServiceProvider',
             ]);
 
         //$this->runProcess('php artisan passport:install');
