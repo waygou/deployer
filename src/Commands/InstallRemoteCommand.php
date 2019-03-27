@@ -2,10 +2,11 @@
 
 namespace Waygou\Deployer\Commands;
 
-use Laravel\Passport\Client;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
-use sixlive\DotenvEditor\DotenvEditor;
+use Laravel\Passport\Client;
 use Waygou\Deployer\Abstracts\DeployerInstallerBootstrap;
+use sixlive\DotenvEditor\DotenvEditor;
 
 class InstallRemoteCommand extends DeployerInstallerBootstrap
 {
@@ -111,17 +112,26 @@ class InstallRemoteCommand extends DeployerInstallerBootstrap
         $this->bulkInfo(1, 'Publishing Laravel Passport resources', 1);
         $this->bar->advance();
         $this->bulkInfo(2);
-        $this->runProcess('php artisan vendor:publish --provider="Laravel\Passport\PassportServiceProvider"');
+        Artisan::call('vendor:publish', [
+                'provider' => 'Laravel\Passport\PassportServiceProvider'
+            ]);
+        //$this->runProcess('php artisan vendor:publish --provider="Laravel\Passport\PassportServiceProvider"');
 
         $this->bulkInfo(1, 'Running migrations...', 1);
         $this->bar->advance();
         $this->bulkInfo(2);
-        $this->runProcess('php artisan migrate');
+        Artisan::call('migrate');
+
+        //$this->runProcess('php artisan migrate');
 
         $this->bulkInfo(1, 'Installing Laravel Passport...', 1);
         $this->bar->advance();
         $this->bulkInfo(2);
-        $this->runProcess('php artisan passport:install');
+        Artisan::call('passport:install', [
+                'provider' => 'Laravel\Passport\PassportServiceProvider'
+            ]);
+
+        //$this->runProcess('php artisan passport:install');
 
         $this->bulkInfo(1, 'Refreshing autoload...', 1);
         $this->bar->advance();
