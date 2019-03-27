@@ -4,7 +4,7 @@ use Waygou\Deployer\Deployer;
 
 return [
 
-    /**
+    /*
      * Environment type:
      * 'local' = Your local dev machine
      * 'remote' = Your remote codebase server.
@@ -37,23 +37,23 @@ return [
         'after_deployment' => [
             'cache:clear',
             'view:clear',
-            'clear'
+            'clear',
         ],
     ],
 
     // What's the codebase you want to upload to your remote server?
     'codebase' => [
         'folders' => [
-            'app'
+            'app',
         ],
         'files' => [
             'database/factories/UserFactory.php',
-            'resources/js/app.js'
+            'resources/js/app.js',
         ],
         // Files or folders where you don't want to override them on your remote server.
         'whitelist' => [
-            '.env'
-        ]
+            '.env',
+        ],
     ],
 
     // Storage where it should be created all the transaction folders for your codebase.
