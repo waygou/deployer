@@ -112,11 +112,16 @@ class InstallRemoteCommand extends DeployerInstallerBootstrap
 
         $this->bulkInfo(1, 'Publishing Laravel Passport resources', 1);
         $this->bar->advance();
-        $this->bulkInfo(2);
+        $this->bulkInfo(2, 'Publishing Laravel Passport configuration...', 1);
         $this->runProcess('php artisan vendor:publish --tag=passport-config');
+        $this->bar->advance();
+        $this->bulkInfo(2, 'Running Laravel Passport migrations...', 1);
         $this->runProcess('php artisan migrate');
+        $this->bar->advance();
+        $this->bulkInfo(2, 'Installing Laravel Passport...', 1);
         $this->runProcess('php artisan passport:install');
-        $this->bulkInfo(1, 'Refreshing autoload...', 1);
+        $this->bar->advance();
+        $this->bulkInfo(2, 'Refreshing autoload...', 1);
         $this->bar->advance();
         $this->bulkInfo(2);
         $this->runProcess('composer dumpautoload');
