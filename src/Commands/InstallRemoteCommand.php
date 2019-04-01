@@ -113,7 +113,7 @@ class InstallRemoteCommand extends DeployerInstallerBootstrap
         $this->bar->advance();
         $this->bulkInfo(2);
         Artisan::call('vendor:publish', [
-                'provider' => 'Laravel\Passport\PassportServiceProvider',
+                '--provider' => 'Laravel\Passport\PassportServiceProvider',
             ]);
         //$this->runProcess('php artisan vendor:publish --provider="Laravel\Passport\PassportServiceProvider"');
 
@@ -127,9 +127,7 @@ class InstallRemoteCommand extends DeployerInstallerBootstrap
         $this->bulkInfo(1, 'Installing Laravel Passport...', 1);
         $this->bar->advance();
         $this->bulkInfo(2);
-        Artisan::call('passport:install', [
-                'provider' => 'Laravel\Passport\PassportServiceProvider',
-            ]);
+        Artisan::call('passport:install');
 
         //$this->runProcess('php artisan passport:install');
 
