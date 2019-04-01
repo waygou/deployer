@@ -116,13 +116,13 @@ class InstallRemoteCommand extends DeployerInstallerBootstrap
         $return = Artisan::call('vendor:publish', [
                 '--tag' => 'passport-config',
             ]);
-        $this->bulkInfo(1, 'Exit Code: ' . $return, 1);
+        $this->bulkInfo(1, 'Exit Code: '.$return, 1);
 
         $return = Artisan::call('vendor:publish', [
                 '--tag' => 'passport-migrations',
             ]);
 
-        $this->bulkInfo(1, 'Exit Code: ' . $return, 1);
+        $this->bulkInfo(1, 'Exit Code: '.$return, 1);
 
         //$this->runProcess('php artisan vendor:publish --provider="Laravel\Passport\PassportServiceProvider"');
 
@@ -130,7 +130,7 @@ class InstallRemoteCommand extends DeployerInstallerBootstrap
         $this->bar->advance();
         $this->bulkInfo(2);
         $return = Artisan::call('migrate');
-        $this->bulkInfo(1, 'Exit Code: ' . $return, 1);
+        $this->bulkInfo(1, 'Exit Code: '.$return, 1);
 
         //$this->runProcess('php artisan migrate');
 
@@ -138,8 +138,7 @@ class InstallRemoteCommand extends DeployerInstallerBootstrap
         $this->bar->advance();
         $this->bulkInfo(2);
         $return = Artisan::call('passport:install');
-        $this->bulkInfo(1, 'Exit Code: ' . $return, 1);
-
+        $this->bulkInfo(1, 'Exit Code: '.$return, 1);
 
         //$this->runProcess('php artisan passport:install');
 
