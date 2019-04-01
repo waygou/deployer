@@ -108,26 +108,38 @@ class InstallRemoteCommand extends DeployerInstallerBootstrap
         $this->bar->advance();
         $this->bulkInfo(2);
         $this->runProcess('composer require laravel/passport');
+        $this->runProcess('composer dumpautoload');
 
         $this->bulkInfo(1, 'Publishing Laravel Passport resources', 1);
         $this->bar->advance();
         $this->bulkInfo(2);
-        Artisan::call('vendor:publish', [
-                '--provider' => '"Laravel\Passport\PassportServiceProvider"',
+        $return = Artisan::call('vendor:publish', [
+                '--tag' => 'passport-config',
             ]);
+        $this->bulkInfo(1, 'Exit Code: ' . $return, 1);
+
+        $return = Artisan::call('vendor:publish', [
+                '--tag' => 'passport-migrations',
+            ]);
+
+        $this->bulkInfo(1, 'Exit Code: ' . $return, 1);
+
         //$this->runProcess('php artisan vendor:publish --provider="Laravel\Passport\PassportServiceProvider"');
 
         $this->bulkInfo(1, 'Running migrations...', 1);
         $this->bar->advance();
         $this->bulkInfo(2);
-        Artisan::call('migrate');
+        $return = Artisan::call('migrate');
+        $this->bulkInfo(1, 'Exit Code: ' . $return, 1);
 
         //$this->runProcess('php artisan migrate');
 
         $this->bulkInfo(1, 'Installing Laravel Passport...', 1);
         $this->bar->advance();
         $this->bulkInfo(2);
-        Artisan::call('passport:install');
+        $return = Artisan::call('passport:install');
+        $this->bulkInfo(1, 'Exit Code: ' . $return, 1);
+
 
         //$this->runProcess('php artisan passport:install');
 
