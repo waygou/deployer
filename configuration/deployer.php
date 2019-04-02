@@ -39,7 +39,7 @@ return [
             'cache:clear',
             'config:clear',
             'queue:restart',
-            'up'
+            'up',
         ],
     ],
 

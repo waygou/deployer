@@ -99,13 +99,13 @@ class LocalOperation
          */
 
         collect(app('config')->get('deployer.codebase.folders'))->each(function ($item) use (&$zip) {
-            if (!blank($item)) {
+            if (! blank($item)) {
                 $zip->folder($item)->add(base_path($item));
             }
         });
 
         collect(app('config')->get('deployer.codebase.files'))->each(function ($item) use (&$zip) {
-            if (!blank($item)) {
+            if (! blank($item)) {
                 $fileData = pathinfo($item);
                 $zip->folder($fileData['dirname'])->add(base_path($item));
             }
