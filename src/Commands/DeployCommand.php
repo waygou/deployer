@@ -94,10 +94,11 @@ final class DeployCommand extends DeployerInstallerBootstrap
     {
         $this->bulkInfo(2, 'Running your post-scripts after unpacking your codebase (if they exist)...', 1);
 
-        rescue(function () {
+        deployer_rescue(function () {
             Local::getAccessToken()
                  ->runPostScripts($this->transaction);
-        }, function () {
+        }, function ($exception) {
+            $this->exception = $exception;
             $this->gracefullyExit();
         });
     }
@@ -106,10 +107,11 @@ final class DeployCommand extends DeployerInstallerBootstrap
     {
         $this->bulkInfo(2, 'Unpacking your codebase on your remote server...', 1);
 
-        rescue(function () {
+        deployer_rescue(function () {
             Local::getAccessToken()
                  ->deploy($this->transaction);
-        }, function () {
+        }, function ($exception) {
+            $this->exception = $exception;
             $this->gracefullyExit();
         });
     }
@@ -118,10 +120,11 @@ final class DeployCommand extends DeployerInstallerBootstrap
     {
         $this->bulkInfo(2, 'Running your pre-scripts after unpacking your codebase (if they exist)...', 1);
 
-        rescue(function () {
+        deployer_rescue(function () {
             Local::getAccessToken()
                  ->runPreScripts($this->transaction);
-        }, function () {
+        }, function ($exception) {
+            $this->exception = $exception;
             $this->gracefullyExit();
         });
     }
@@ -130,10 +133,11 @@ final class DeployCommand extends DeployerInstallerBootstrap
     {
         $this->bulkInfo(2, 'Uploading package to remote environment...', 1);
 
-        rescue(function () {
+        deployer_rescue(function () {
             Local::getAccessToken()
                  ->uploadCodebase($this->transaction);
-        }, function () {
+        }, function ($exception) {
+            $this->exception = $exception;
             $this->gracefullyExit();
         });
     }
@@ -142,10 +146,11 @@ final class DeployCommand extends DeployerInstallerBootstrap
     {
         $this->bulkInfo(2, 'Asking remote server to make its pre-checks...', 1);
 
-        rescue(function () {
+        deployer_rescue(function () {
             Local::getAccessToken()
                  ->askRemoteForPreChecks();
-        }, function () {
+        }, function ($exception) {
+            $this->exception = $exception;
             $this->gracefullyExit();
         });
     }
