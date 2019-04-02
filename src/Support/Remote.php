@@ -76,17 +76,15 @@ class RemoteOperation
 
     public function storeRepository(CodebaseRepository $repository)
     {
-        // rescue() used than try-catch statement just to use the exception->report() from Laravel.
-        // https://laravel.com/docs/5.8/helpers#method-rescue
-        rescue(function () use ($repository) {
+        deployer_rescue(function () use ($repository) {
             // Create a new transaction folder inside the deployer storage.
             Storage::disk('deployer')->makeDirectory($repository->transaction());
 
             // Store the runbook, and the zip codebase file.
             Storage::disk('deployer')->put("{$repository->transaction()}/codebase.zip", $repository->codebaseStream());
             Storage::disk('deployer')->put("{$repository->transaction()}/runbook.json", $repository->runbook());
-        }, function () {
-            throw new RemoteException('An  error occured whle trying to store your codebase in the remote environment');
+        }, function ($exception) {
+            throw new RemoteException($exception->getMessage());
         });
     }
 

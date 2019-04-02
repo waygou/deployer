@@ -39,7 +39,7 @@ return [
             'cache:clear',
             'config:clear',
             'queue:restart',
-            'up',
+            'up'
         ],
     ],
 
@@ -47,10 +47,10 @@ return [
     // Each selected folder will contain all the children sub-folders/files.
     'codebase' => [
         'folders' => [
-            '', // E.g.: 'app' or 'resources'
+            // E.g.: 'app' or 'resources', as many as you want.
         ],
         'files' => [
-            '', // E.g.: 'database/factories/UserFactory.php'
+            // E.g.: 'database/factories/UserFactory.php' as many as you want.
         ],
         // What files/folders you don't want to override on your remote server?
         'whitelist' => [

@@ -118,7 +118,7 @@ final class DeployCommand extends DeployerInstallerBootstrap
 
     protected function runPreScripts()
     {
-        $this->bulkInfo(2, 'Running your pre-scripts after unpacking your codebase (if they exist)...', 1);
+        $this->bulkInfo(2, 'Running your pre-scripts before unpacking your codebase (if they exist)...', 1);
 
         deployer_rescue(function () {
             Local::getAccessToken()
@@ -159,10 +159,11 @@ final class DeployCommand extends DeployerInstallerBootstrap
     {
         $this->bulkInfo(2, 'Checking OAuth & remote environment connectivity...', 1);
 
-        rescue(function () {
+        deployer_rescue(function () {
             Local::getAccessToken()
                  ->ping();
-        }, function () {
+        }, function ($exception) {
+            $this->exception = $exception;
             $this->gracefullyExit();
         });
     }
@@ -170,9 +171,10 @@ final class DeployCommand extends DeployerInstallerBootstrap
     protected function runPreChecks()
     {
         $this->bulkInfo(2, 'Checking local environment storage availability...', 1);
-        rescue(function () {
+        deployer_rescue(function () {
             Local::preChecks();
-        }, function () {
+        }, function ($exception) {
+            $this->exception = $exception;
             $this->gracefullyExit();
         });
     }
