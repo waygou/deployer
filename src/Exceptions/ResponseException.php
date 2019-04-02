@@ -30,15 +30,15 @@ class ResponseException extends Exception
         }
 
         // Compute message.
-        if (!is_null(data_get(optional($response->payload)->json, 'exception'))) {
+        if (! is_null(data_get(optional($response->payload)->json, 'exception'))) {
             $this->message = data_get($response->payload->json, 'exception');
         }
 
-        if (!is_null(data_get(optional($response->payload)->json, 'message'))) {
+        if (! is_null(data_get(optional($response->payload)->json, 'message'))) {
             $this->message = data_get($response->payload->json, 'message');
         }
 
-        if (!is_null(optional($response->instance)->getReasonPhrase())) {
+        if (! is_null(optional($response->instance)->getReasonPhrase())) {
             $this->message = optional($response->instance)->getReasonPhrase();
         }
 
