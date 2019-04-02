@@ -17,7 +17,7 @@ class DeployerServiceProvider extends ServiceProvider
     {
         $this->publishConfiguration();
 
-        if (config('deployer.type') == 'remote') {
+        if (config('deployer.type') == 'remote' &&  class_exists('\Laravel\Passport\Passport')) {
             $this->loadRemoteRoutes();
         }
 
