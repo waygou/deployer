@@ -31,7 +31,7 @@ final class RemoteOperation
     public function unzipCodebase(string $transaction) : void
     {
         if (Storage::disk('deployer')->exists("{$transaction}/codebase.zip")) {
-            Zipper::make(deployer_storage_path("{$transaction}/codebase.zip"))->extractTo(base_path(), app('config')->get('deployer.codebase.whitelist'), Zipper::WHITELIST);
+            Zipper::make(deployer_storage_path("{$transaction}/codebase.zip"))->extractTo(base_path(), app('config')->get('deployer.codebase.whitelist'), 1);
         }
     }
 
