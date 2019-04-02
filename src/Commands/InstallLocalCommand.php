@@ -5,7 +5,7 @@ namespace Waygou\Deployer\Commands;
 use sixlive\DotenvEditor\DotenvEditor;
 use Waygou\Deployer\Abstracts\DeployerInstallerBootstrap;
 
-class InstallLocalCommand extends DeployerInstallerBootstrap
+final class InstallLocalCommand extends DeployerInstallerBootstrap
 {
     protected $messages = [
         'client.required' => 'The --client option is required.',

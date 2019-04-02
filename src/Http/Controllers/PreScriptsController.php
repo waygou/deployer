@@ -7,7 +7,7 @@ use Waygou\Deployer\Support\Remote;
 use Illuminate\Support\Facades\Validator;
 use Waygou\Deployer\Abstracts\RemoteBaseController;
 
-class PreScriptsController extends RemoteBaseController
+final class PreScriptsController extends RemoteBaseController
 {
     public function __invoke(Request $request)
     {

@@ -6,7 +6,7 @@ use Exception;
 use Illuminate\Support\Facades\Log;
 use Waygou\Deployer\Support\ResponsePayload;
 
-class ResponseException extends Exception
+final class ResponseException extends Exception
 {
     public $response;
     public $reason;

@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Validator;
 use Waygou\Deployer\Support\CodebaseRepository;
 use Waygou\Deployer\Abstracts\RemoteBaseController;
 
-class UploadController extends RemoteBaseController
+final class UploadController extends RemoteBaseController
 {
     public function __invoke(Request $request)
     {

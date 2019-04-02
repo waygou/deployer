@@ -5,7 +5,6 @@ namespace Waygou\Deployer;
 use Laravel\Passport\Passport;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
-use Waygou\Deployer\Commands\TestCommand;
 use Waygou\Deployer\Commands\DeployCommand;
 use Waygou\Deployer\Commands\InstallLocalCommand;
 use Waygou\Deployer\Commands\InstallRemoteCommand;
@@ -66,8 +65,7 @@ class DeployerServiceProvider extends ServiceProvider
         $this->commands([
             InstallRemoteCommand::class,
             InstallLocalCommand::class,
-            DeployCommand::class,
-            TestCommand::class,
+            DeployCommand::class
         ]);
 
         app('router')->aliasMiddleware(

@@ -5,7 +5,7 @@ namespace Waygou\Deployer\Exceptions;
 use Exception;
 use Illuminate\Support\Facades\Log;
 
-class CodebaseRepositoryException extends Exception
+final class CodebaseRepositoryException extends Exception
 {
     public $message;
 

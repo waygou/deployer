@@ -5,7 +5,7 @@ namespace Waygou\Deployer\Exceptions;
 use Exception;
 use Illuminate\Support\Facades\Log;
 
-class RemoteException extends Exception
+final class RemoteException extends Exception
 {
     public $message;
 

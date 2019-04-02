@@ -10,35 +10,15 @@ final class DeployCommand extends DeployerInstallerBootstrap
 {
     use SimplifiesConsoleOutput;
 
-    /**
-     * The name and signature of the console command.
-     *
-     * @var string
-     */
     protected $signature = 'deploy';
 
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
     protected $description = 'Deploys your codebase content to your remote environment';
 
-    /**
-     * Create a new command instance.
-     *
-     * @return void
-     */
     public function __construct()
     {
         parent::__construct();
     }
 
-    /**
-     * Execute the console command.
-     *
-     * @return mixed
-     */
     public function handle()
     {
         parent::handle();

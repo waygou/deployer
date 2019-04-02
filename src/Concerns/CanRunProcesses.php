@@ -7,15 +7,6 @@ use Symfony\Component\Process\Exception\RuntimeException;
 
 trait CanRunProcesses
 {
-    /**
-     * Executes a process.
-     *
-     * @param  string $command
-     * @param  string $path
-     * @return void|string
-     *
-     * @throws Symfony\Component\Process\Exception\RuntimeException
-     */
     protected function runProcess($command, $path = null)
     {
         $path = $path ?? getcwd();

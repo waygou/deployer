@@ -8,7 +8,7 @@ use sixlive\DotenvEditor\DotenvEditor;
 use Illuminate\Support\Facades\Artisan;
 use Waygou\Deployer\Abstracts\DeployerInstallerBootstrap;
 
-class InstallRemoteCommand extends DeployerInstallerBootstrap
+final class InstallRemoteCommand extends DeployerInstallerBootstrap
 {
     private $client;
 

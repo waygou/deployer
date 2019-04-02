@@ -5,7 +5,7 @@ namespace Waygou\Deployer\Exceptions;
 use Exception;
 use Illuminate\Support\Facades\Log;
 
-class LocalException extends Exception
+final class LocalException extends Exception
 {
     public $message;
 

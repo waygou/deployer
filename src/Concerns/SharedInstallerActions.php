@@ -9,13 +9,17 @@ trait SharedInstallerActions
     protected function publishDeployerResources()
     {
         $this->bulkInfo(2, 'Publishing Deployer resources...', 1);
-        $this->runProcess('php artisan vendor:publish --provider="Waygou\Deployer\DeployerServiceProvider" --force --quiet');
+        $this->runProcess('php artisan vendor:publish
+                                       --provider="Waygou\Deployer\DeployerServiceProvider"
+                                       --force
+                                       --quiet');
     }
 
     protected function clearConfigurationCache()
     {
         $this->bulkInfo(2, 'Cleaning Configuration cache...', 1);
-        $this->runProcess('php artisan config:clear --quiet', getcwd());
+        $this->runProcess('php artisan config:clear
+                                       --quiet', getcwd());
     }
 
     protected function unsetEnvData()

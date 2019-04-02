@@ -5,7 +5,7 @@ namespace Waygou\Deployer\Http\Controllers;
 use Waygou\Deployer\Support\Remote;
 use Waygou\Deployer\Abstracts\RemoteBaseController;
 
-class PreChecksController extends RemoteBaseController
+final class PreChecksController extends RemoteBaseController
 {
     public function __invoke()
     {
