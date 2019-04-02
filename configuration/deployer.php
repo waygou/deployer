@@ -45,7 +45,7 @@ return [
     // Each selected folder will contain all the children sub-folders/files.
     'codebase' => [
         'folders' => [
-            'app'
+            'app',
             // E.g.: 'app' or 'resources', as many as you want.
         ],
         'files' => [
