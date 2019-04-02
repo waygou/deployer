@@ -6,7 +6,7 @@ use Zttp\Zttp;
 use Zttp\ConnectionException;
 use GuzzleHttp\Exception\RequestException;
 
-class ReSTCaller
+final class ReSTCaller
 {
     public static function __callStatic($method, $args)
     {
@@ -14,7 +14,7 @@ class ReSTCaller
     }
 }
 
-class RequestPayload
+final class RequestPayload
 {
     private const HTTP_VERB_GET = 'get';
     private const HTTP_VERB_POST = 'post';

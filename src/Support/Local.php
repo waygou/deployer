@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Storage;
 use Waygou\Deployer\Exceptions\LocalException;
 use Waygou\Deployer\Exceptions\ResponseException;
 
-class Local
+final class Local
 {
     public static function __callStatic($method, $args)
     {
@@ -16,7 +16,7 @@ class Local
     }
 }
 
-class LocalOperation
+final class LocalOperation
 {
     private $accessToken;
     protected $zipFilename;

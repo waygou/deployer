@@ -4,7 +4,7 @@ namespace Waygou\Deployer\Middleware;
 
 use Closure;
 
-class SameToken
+final class SameToken
 {
     public function handle($request, Closure $next)
     {

@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Storage;
 use Waygou\Deployer\Concerns\CanRunProcesses;
 use Waygou\Deployer\Exceptions\RemoteException;
 
-class Remote
+final class Remote
 {
     public static function __callStatic($method, $args)
     {
@@ -16,7 +16,7 @@ class Remote
     }
 }
 
-class RemoteOperation
+final class RemoteOperation
 {
     use CanRunProcesses;
 

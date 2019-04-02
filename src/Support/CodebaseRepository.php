@@ -2,7 +2,7 @@
 
 namespace Waygou\Deployer\Support;
 
-class CodebaseRepository
+final class CodebaseRepository
 {
     private $runbook;
     private $codebaseStream;

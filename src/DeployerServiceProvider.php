@@ -10,7 +10,7 @@ use Waygou\Deployer\Commands\InstallLocalCommand;
 use Waygou\Deployer\Commands\InstallRemoteCommand;
 use Laravel\Passport\Http\Middleware\CheckClientCredentials;
 
-class DeployerServiceProvider extends ServiceProvider
+final class DeployerServiceProvider extends ServiceProvider
 {
     public function boot()
     {

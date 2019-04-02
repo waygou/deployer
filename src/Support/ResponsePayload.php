@@ -4,7 +4,7 @@ namespace Waygou\Deployer\Support;
 
 use Zttp\ZttpResponse;
 
-class ResponsePayload
+final class ResponsePayload
 {
     public $isOk = false;
     public $instance = null;

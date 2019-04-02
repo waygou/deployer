@@ -4,7 +4,7 @@ namespace Waygou\Deployer\Middleware;
 
 use Closure;
 
-class IsJson
+final class IsJson
 {
     public function handle($request, Closure $next)
     {
