@@ -67,7 +67,6 @@ function deployer_rescue(callable $callback, $rescue = null)
         return $callback();
     } catch (Throwable $e) {
         report($e);
-
         return $rescue($e);
     }
 }

@@ -29,9 +29,17 @@ class ResponseException extends Exception
             $this->message = $response->exception->message;
         }
 
-        if (isset($response->payload)) {
-            $this->message = data_get($response->payload->json, 'message') ??
-                             data_get($response->payload->json, 'exception');
+        // Compute message.
+        if (!is_null(data_get(optional($response->payload)->json, 'exception'))) {
+            $this->message = data_get($response->payload->json, 'exception');
+        }
+
+        if (!is_null(data_get(optional($response->payload)->json, 'message'))) {
+            $this->message = data_get($response->payload->json, 'message');
+        }
+
+        if (!is_null(optional($response->instance)->getReasonPhrase())) {
+            $this->message = optional($response->instance)->getReasonPhrase();
         }
 
         parent::__construct($this->message);
