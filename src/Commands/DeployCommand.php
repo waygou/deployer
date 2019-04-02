@@ -2,10 +2,9 @@
 
 namespace Waygou\Deployer\Commands;
 
-use Illuminate\Support\Arr;
-use Waygou\Deployer\Abstracts\DeployerInstallerBootstrap;
-use Waygou\Deployer\Concerns\SimplifiesConsoleOutput;
 use Waygou\Deployer\Support\Local;
+use Waygou\Deployer\Concerns\SimplifiesConsoleOutput;
+use Waygou\Deployer\Abstracts\DeployerInstallerBootstrap;
 
 final class DeployCommand extends DeployerInstallerBootstrap
 {
