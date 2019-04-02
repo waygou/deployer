@@ -28,14 +28,14 @@ final class RemoteOperation
         return new self(...$args);
     }
 
-    public function unzipCodebase(string $transaction)
+    public function unzipCodebase(string $transaction) : void
     {
         if (Storage::disk('deployer')->exists("{$transaction}/codebase.zip")) {
             Zipper::make(deployer_storage_path("{$transaction}/codebase.zip"))->extractTo(base_path());
         }
     }
 
-    private function runScripts(string $type, string $transaction)
+    private function runScripts(string $type, string $transaction) : void
     {
         if (Storage::disk('deployer')->exists("{$transaction}/runbook.json")) {
             $resource = json_decode(Storage::disk('deployer')->get("{$transaction}/runbook.json"));
@@ -52,17 +52,17 @@ final class RemoteOperation
         }
     }
 
-    public function runPostScripts(string $transaction)
+    public function runPostScripts(string $transaction) : void
     {
         $this->runScripts(self::POSTDEPLOYMENT, $transaction);
     }
 
-    public function runPreScripts(string $transaction)
+    public function runPreScripts(string $transaction) : void
     {
         $this->runScripts(self::PREDEPLOYMENT, $transaction);
     }
 
-    public function preChecks()
+    public function preChecks() : void
     {
         $storagePath = app('config')->get('deployer.storage.path');
         if (! is_dir($storagePath)) {
@@ -74,7 +74,7 @@ final class RemoteOperation
         }
     }
 
-    public function storeRepository(CodebaseRepository $repository)
+    public function storeRepository(CodebaseRepository $repository) : void
     {
         deployer_rescue(function () use ($repository) {
             // Create a new transaction folder inside the deployer storage.
@@ -88,7 +88,7 @@ final class RemoteOperation
         });
     }
 
-    private function runScript($mixed)
+    private function runScript($mixed) : string
     {
         // Invokable class.
         if (class_exists($mixed)) {

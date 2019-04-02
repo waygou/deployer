@@ -19,9 +19,10 @@ final class Local
 final class LocalOperation
 {
     private $accessToken;
+
     protected $zipFilename;
 
-    public function createRepository(string $transaction)
+    public function createRepository(string $transaction) : void
     {
         // Create a new transaction folder inside the deployer storage.
         Storage::disk('deployer')->makeDirectory($transaction);
@@ -36,7 +37,7 @@ final class LocalOperation
         );
     }
 
-    public function runPostScripts(string $transaction)
+    public function runPostScripts(string $transaction) : void
     {
         $response = ReSTCaller::asPost()
                               ->withHeader('Authorization', 'Bearer '.$this->accessToken->token)
@@ -48,7 +49,7 @@ final class LocalOperation
         $this->checkResponseAcknowledgement($response);
     }
 
-    public function deploy(string $transaction)
+    public function deploy(string $transaction) : void
     {
         $response = ReSTCaller::asPost()
                               ->withHeader('Authorization', 'Bearer '.$this->accessToken->token)
@@ -60,7 +61,7 @@ final class LocalOperation
         $this->checkResponseAcknowledgement($response);
     }
 
-    public function runPreScripts(string $transaction)
+    public function runPreScripts(string $transaction) : void
     {
         $response = ReSTCaller::asPost()
                               ->withHeader('Authorization', 'Bearer '.$this->accessToken->token)
@@ -72,12 +73,7 @@ final class LocalOperation
         $this->checkResponseAcknowledgement($response);
     }
 
-    /**
-     * Creates a zip file with the respective codebase configuration resources.
-     *
-     * @return void
-     */
-    public function CreateCodebaseZip(string $fqfilename)
+    public function CreateCodebaseZip(string $fqfilename) : void
     {
         if (count(app('config')->get('deployer.codebase.folders')) == 0 && count(app('config')->get('deployer.codebase.files')) == 0) {
             throw new LocalException('No files or folders identified to upload. Please check your configuration file');
@@ -108,7 +104,7 @@ final class LocalOperation
         $zip->close();
     }
 
-    public function uploadCodebase(string $transaction)
+    public function uploadCodebase(string $transaction) : void
     {
         $response = ReSTCaller::asPost()
                               ->withHeader('Authorization', 'Bearer '.$this->accessToken->token)
@@ -122,14 +118,7 @@ final class LocalOperation
         $this->checkResponseAcknowledgement($response);
     }
 
-    /**
-     * The local environment pre-checklist actions correspond to:
-     * - Attempt to create the deployer storage folder in case it doesn't exist.
-     * - Verify if the storage directory is writeable.
-     *
-     * @return void
-     */
-    public function preChecks()
+    public function preChecks() : void
     {
         $storagePath = app('config')->get('deployer.storage.path');
         if (! is_dir($storagePath)) {
@@ -141,11 +130,6 @@ final class LocalOperation
         }
     }
 
-    /**
-     * Retrieves an access token from the remote server.
-     * Populates private $accessToken with the access token credentials.
-     * @return void
-     */
     public function getAccessToken()
     {
         $response = ReSTCaller::asPost()
@@ -165,7 +149,7 @@ final class LocalOperation
         return $this;
     }
 
-    public function askRemoteForPreChecks()
+    public function askRemoteForPreChecks() : void
     {
         $response = ReSTCaller::asPost()
                           ->withHeader('Authorization', 'Bearer '.$this->accessToken->token)
@@ -176,7 +160,7 @@ final class LocalOperation
         $this->checkResponseAcknowledgement($response);
     }
 
-    public function ping()
+    public function ping() : void
     {
         $response = ReSTCaller::asPost()
                           ->withHeader('Authorization', 'Bearer '.$this->accessToken->token)
@@ -194,14 +178,14 @@ final class LocalOperation
      * @param  ResponsePayload $response The response payload.
      * @return void
      */
-    private function checkResponseAcknowledgement(ResponsePayload $response)
+    private function checkResponseAcknowledgement(ResponsePayload $response) : void
     {
         if (! $response->isOk || data_get($response->payload->json, 'payload.result') != true) {
             throw new ResponseException($response);
         }
     }
 
-    private function checkAccessToken(?ResponsePayload $response)
+    private function checkAccessToken(?ResponsePayload $response) : void
     {
         if (! $response->isOk || data_get($response->payload->json, 'payload.access_token') != null) {
             throw new ResponseException($response);
