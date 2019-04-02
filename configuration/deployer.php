@@ -52,6 +52,7 @@ return [
             // E.g.: 'database/factories/UserFactory.php' as many as you want.
         ],
         // What files/folders you want to skip when deploying the codebase?
+        // Configure this list on your server.
         'blacklist' => [
             '.env',
         ],
