@@ -30,7 +30,6 @@ class InstallLocalCommand extends DeployerInstallerBootstrap
         $fields = $this->validateOptions();
         if (! $fields->ok) {
             $this->error($fields->message);
-
             return;
         }
 
