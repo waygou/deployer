@@ -30,4 +30,12 @@ trait SharedInstallerActions
         $env->save();
         unset($env);
     }
+
+    protected function gracefullyExit()
+    {
+        $message = $this->exception->getMessage() ?? 'Ups. Looks like this step failed. Please check your Laravel logs for more information';
+
+        $this->error("An error occurred! => $message");
+        exit();
+    }
 }

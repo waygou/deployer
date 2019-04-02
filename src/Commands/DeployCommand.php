@@ -82,9 +82,10 @@ final class DeployCommand extends DeployerInstallerBootstrap
     {
         $this->bulkInfo(2, "Creating local environment deployment repository ({$this->transaction})...", 1);
 
-        rescue(function () {
+        deployer_rescue(function () {
             Local::createRepository($this->transaction);
-        }, function () {
+        }, function ($exception) {
+            $this->exception = $exception;
             $this->gracefullyExit();
         });
     }
@@ -169,20 +170,5 @@ final class DeployCommand extends DeployerInstallerBootstrap
         }, function () {
             $this->gracefullyExit();
         });
-    }
-
-    protected function executeOrFail(callable $process, $errorKey)
-    {
-        rescue($process, function () use ($errorKey) {
-            $this->error(__("deployer::exceptions.{$errorKey}"));
-            exit();
-        });
-    }
-
-    protected function gracefullyExit($message = null)
-    {
-        dd($message);
-        $this->error($message ?? 'Ups. Looks like this step failed. Please check your Laravel logs for more information');
-        exit();
     }
 }

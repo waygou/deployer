@@ -60,3 +60,14 @@ function generate_transaction_code()
 {
     return date('Ymd-His').'-'.strtoupper(str_random(5));
 }
+
+function deployer_rescue(callable $callback, $rescue = null)
+{
+    try {
+        return $callback();
+    } catch (Throwable $e) {
+        report($e);
+
+        return $rescue($e);
+    }
+}

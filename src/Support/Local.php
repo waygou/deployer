@@ -23,23 +23,17 @@ class LocalOperation
 
     public function createRepository(string $transaction)
     {
-        // rescue() used insted of try-catch statement just to use the exception->report() from Laravel!
-        // https://laravel.com/docs/5.8/helpers#method-rescue
-        rescue(function () use ($transaction) {
-            // Create a new transaction folder inside the deployer storage.
-            Storage::disk('deployer')->makeDirectory($transaction);
+        // Create a new transaction folder inside the deployer storage.
+        Storage::disk('deployer')->makeDirectory($transaction);
 
-            // Create zip, and store it inside the transaction folder.
-            $this->CreateCodebaseZip(deployer_storage_path("{$transaction}/codebase.zip"));
+        // Create zip, and store it inside the transaction folder.
+        $this->CreateCodebaseZip(deployer_storage_path("{$transaction}/codebase.zip"));
 
-            // Store the runbook, and the zip codebase file.
-            Storage::disk('deployer')->put(
-                "{$transaction}/runbook.json",
-                json_encode(app('config')->get('deployer.scripts'))
-            );
-        }, function () {
-            throw new LocalException('An error occured whle trying to store your codebase in your local environment');
-        });
+        // Store the runbook, and the zip codebase file.
+        Storage::disk('deployer')->put(
+            "{$transaction}/runbook.json",
+            json_encode(app('config')->get('deployer.scripts'))
+        );
     }
 
     public function runPostScripts(string $transaction)
