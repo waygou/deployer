@@ -65,7 +65,7 @@ final class DeployerServiceProvider extends ServiceProvider
         $this->commands([
             InstallRemoteCommand::class,
             InstallLocalCommand::class,
-            DeployCommand::class
+            DeployCommand::class,
         ]);
 
         app('router')->aliasMiddleware(
