@@ -43,7 +43,7 @@ class InstallRemoteCommand extends DeployerInstallerBootstrap
         $this->unsetEnvData();
         $this->bar->advance();
 
-        if (! is_dir(base_path('vendor/laravel/passport')) && !class_exists('\Laravel\Passport\Passport')) {
+        if (! is_dir(base_path('vendor/laravel/passport')) && ! class_exists('\Laravel\Passport\Passport')) {
             $this->installLaravelPassport();
         }
 
