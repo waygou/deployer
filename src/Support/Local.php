@@ -85,6 +85,10 @@ class LocalOperation
      */
     public function CreateCodebaseZip(string $fqfilename)
     {
+        if (count(app('config')->get('deployer.codebase.folders')) == 0 && count(app('config')->get('deployer.codebase.files')) == 0) {
+            throw new LocalException('No files or folders identified to upload. Please check your configuration file');
+        }
+
         $zip = Zipper::make($fqfilename);
 
         /*
@@ -93,13 +97,18 @@ class LocalOperation
          * Calculation on the folder path for the files iterator using the
          * pathinfo function.
          */
+
         collect(app('config')->get('deployer.codebase.folders'))->each(function ($item) use (&$zip) {
-            $zip->folder($item)->add(base_path($item));
+            if (!blank($item)) {
+                $zip->folder($item)->add(base_path($item));
+            }
         });
 
         collect(app('config')->get('deployer.codebase.files'))->each(function ($item) use (&$zip) {
-            $fileData = pathinfo($item);
-            $zip->folder($fileData['dirname'])->add(base_path($item));
+            if (!blank($item)) {
+                $fileData = pathinfo($item);
+                $zip->folder($fileData['dirname'])->add(base_path($item));
+            }
         });
 
         $zip->close();

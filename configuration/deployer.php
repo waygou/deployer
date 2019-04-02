@@ -15,7 +15,8 @@ return [
      * Your remove server information group.
      */
     'remote' => [
-        // Your remote server URL. Configured in your .env when installing deployer on your local server.
+        // Your remote server URL.
+        // Manually configured when you install deployer on your local computer.
         'url' => env('DEPLOYER_REMOTE_URL'),
 
         // Your route prefix, default is <your-server-url>/deployer.
@@ -32,31 +33,32 @@ return [
      */
     'scripts' => [
         'before_deployment' => [
-            'route:list', // Just an example.
+            'down',
         ],
         'after_deployment' => [
             'cache:clear',
-            'view:clear',
-            'clear',
+            'config:clear',
+            'queue:restart',
+            'up'
         ],
     ],
 
     // What's the codebase you want to upload to your remote server?
+    // Each selected folder will contain all the children sub-folders/files.
     'codebase' => [
         'folders' => [
-            'app',
+            '', // E.g.: 'app' or 'resources'
         ],
         'files' => [
-            'database/factories/UserFactory.php',
-            'resources/js/app.js',
+            '', // E.g.: 'database/factories/UserFactory.php'
         ],
-        // Files or folders where you don't want to override them on your remote server.
+        // What files/folders you don't want to override on your remote server?
         'whitelist' => [
             '.env',
         ],
     ],
 
-    // Storage where it should be created all the transaction folders for your codebase.
+    // Folder path that will store your transaction codebase folders.
     'storage' => [
         'path' => storage_path('app/deployer'),
     ],

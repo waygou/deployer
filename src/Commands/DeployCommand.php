@@ -181,6 +181,7 @@ final class DeployCommand extends DeployerInstallerBootstrap
 
     protected function gracefullyExit($message = null)
     {
+        dd($message);
         $this->error($message ?? 'Ups. Looks like this step failed. Please check your Laravel logs for more information');
         exit();
     }
