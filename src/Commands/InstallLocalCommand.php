@@ -25,7 +25,7 @@ class InstallLocalCommand extends DeployerInstallerBootstrap
     {
         parent::handle();
 
-        $this->steps = 6;
+        $this->steps = 4;
 
         $fields = $this->validateOptions();
         if (! $fields->ok) {
