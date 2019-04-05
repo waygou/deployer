@@ -1,6 +1,7 @@
 <?php
 
 use Waygou\Deployer\Deployer;
+use Waygou\Deployer\Support\ScriptType;
 
 return [
 
@@ -33,12 +34,13 @@ return [
      */
     'scripts' => [
         'before_deployment' => [
+            ['cache:clear'    , ScriptType::ARTISAN],
+            ['view:clear'     , ScriptType::ARTISAN],
+            [MyClass::class   , ScriptType::CLASSMETHOD],
+            ['MyClass@method' , ScriptType::CLASSMETHOD],
+            ['composer update', ScriptType::SHELLCMD],
         ],
-        'after_deployment' => [
-            'cache:clear',
-            'config:clear',
-            'queue:restart',
-        ],
+        'after_deployment' => [],
     ],
 
     // What's the codebase you want to upload to your remote server?
