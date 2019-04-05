@@ -34,10 +34,10 @@ return [
      */
     'scripts' => [
         'before_deployment' => [
-            ['cache:clear'    , ScriptType::ARTISAN],
-            ['view:clear'     , ScriptType::ARTISAN],
-            [MyClass::class   , ScriptType::CLASSMETHOD],
-            ['MyClass@method' , ScriptType::CLASSMETHOD],
+            ['cache:clear', ScriptType::ARTISAN],
+            ['view:clear', ScriptType::ARTISAN],
+            [MyClass::class, ScriptType::CLASSMETHOD],
+            ['MyClass@method', ScriptType::CLASSMETHOD],
             ['composer update', ScriptType::SHELLCMD],
         ],
         'after_deployment' => [],
